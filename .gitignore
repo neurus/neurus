@@ -1,0 +1,10 @@
+# Ignore gradle work directory
+.gradle
+
+# Ignore biuld directory
+build
+
+# Ignore eclipse files
+.settings
+.project
+.classpath
