@@ -1,0 +1,27 @@
+subprojects {
+  version = '1.0-SNAPSHOT'
+
+  apply plugin: 'java'
+  apply plugin: 'eclipse'
+
+  sourceCompatibility = 1.6
+
+  repositories {
+    mavenCentral()
+  }
+
+  configurations {
+    providedDependencies
+  }
+
+  sourceSets {
+    //TODO: http://jira.codehaus.org/browse/GRADLE-784
+    main { compileClasspath += configurations.providedDependencies }
+    test { compileClasspath += configurations.providedDependencies }
+  }
+
+  dependencies {
+    testCompile 'junit:junit:4.8.2'
+  }
+}
+
