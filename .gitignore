@@ -1,8 +1,9 @@
 # Ignore gradle work directory
 .gradle
 
-# Ignore biuld directory
+# Ignore biuld and bin directories
 build
+bin
 
 # Ignore eclipse files
 .settings
