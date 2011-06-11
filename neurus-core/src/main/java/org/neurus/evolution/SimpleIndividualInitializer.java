@@ -1,6 +1,6 @@
 package org.neurus.evolution;
 
-import static org.neurus.utils.Primitives.ubtoi;
+import static org.neurus.util.Primitives.ubtoi;
 
 import org.neurus.instruction.Instruction;
 import org.neurus.instruction.InstructionSet;

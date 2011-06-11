@@ -1,6 +1,6 @@
-package org.neurus.utils;
+package org.neurus.util;
 
-import static org.neurus.utils.Primitives.ubtoi;
+import static org.neurus.util.Primitives.ubtoi;
 
 import org.junit.Assert;
 import org.junit.Test;

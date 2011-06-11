@@ -1,4 +1,4 @@
-package org.neurus.utils;
+package org.neurus.util;
 
 public class Primitives {
 
