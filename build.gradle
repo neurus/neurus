@@ -1,3 +1,12 @@
+
+libraries = [
+  guava: 'com.google.guava:guava:r09',
+  jcommander: 'com.beust:jcommander:1.7',
+  opencsv: 'net.sf.opencsv:opencsv:2.1',
+  junit: 'junit:junit:4.8.2',
+  mockito: 'org.mockito:mockito-all:1.8.5',
+]
+
 subprojects {
   version = '1.0-SNAPSHOT'
 
@@ -21,7 +30,8 @@ subprojects {
   }
 
   dependencies {
-    testCompile 'junit:junit:4.8.2'
+    testCompile libraries.junit
+    testCompile libraries.mockito
   }
 }
 
