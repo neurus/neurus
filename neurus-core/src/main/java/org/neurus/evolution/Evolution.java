@@ -1,6 +1,6 @@
 package org.neurus.evolution;
 
-import org.neurus.instruction.InstructionSet;
+import org.neurus.instruction.Machine;
 import org.neurus.rng.DefaultRandomNumberGenerator;
 import org.neurus.rng.RandomNumberGenerator;
 
@@ -14,17 +14,15 @@ public class Evolution {
   private static final double PCONST = 0.5d;
 
   private RandomNumberGenerator rng;
-  private InstructionSet instructionSet;
+  private Machine machine;
   private PopulationFactory populationInitializer;
   private IndividualInitializer individualInitializer;
 
-  public Evolution(InstructionSet instrSet) {
-    this.instructionSet = instrSet;
+  public Evolution(Machine machine) {
+    this.machine = machine;
     this.rng = new DefaultRandomNumberGenerator(RNG_SEED);
-    this.individualInitializer = new SimpleIndividualInitializer(instructionSet, rng,
-        MIN_INITIALIZATION_PROGRAM_SIZE,
-        MAX_INITIALIZATION_PROGRAM_SIZE,
-        PCONST);
+    this.individualInitializer = new SimpleIndividualInitializer( this.machine, rng,
+        MIN_INITIALIZATION_PROGRAM_SIZE, MAX_INITIALIZATION_PROGRAM_SIZE, PCONST);
     this.populationInitializer = new PopulationFactory(individualInitializer);
   }
 

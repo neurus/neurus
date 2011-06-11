@@ -3,7 +3,7 @@ package org.neurus.evolution;
 import static org.neurus.util.Primitives.ubtoi;
 
 import org.neurus.instruction.Instruction;
-import org.neurus.instruction.InstructionSet;
+import org.neurus.instruction.Machine;
 import org.neurus.rng.RandomNumberGenerator;
 
 import com.google.common.base.Preconditions;
@@ -11,15 +11,15 @@ import com.google.common.base.Preconditions;
 public class SimpleIndividualInitializer implements IndividualInitializer {
 
   private RandomNumberGenerator rng;
-  private InstructionSet instrSet;
+  private Machine machine;
   private double pConst;
   private int minSize;
   private int maxSize;
 
-  public SimpleIndividualInitializer(InstructionSet instrSet, RandomNumberGenerator rng,
+  public SimpleIndividualInitializer(Machine machine, RandomNumberGenerator rng,
       int minSize,
       int maxSize, double pConst) {
-    this.instrSet = instrSet;
+    this.machine = machine;
     this.rng = rng;
     this.minSize = minSize;
     this.maxSize = maxSize;
@@ -30,12 +30,12 @@ public class SimpleIndividualInitializer implements IndividualInitializer {
 
   public Individual newIndividual() {
     int size = randomSize();
-    byte[] bytecode = new byte[size * instrSet.getBytesPerInstruction()];
+    byte[] bytecode = new byte[size * machine.getBytesPerInstruction()];
     int writePos = 0;
     for (int i = 0; i < size; i++) {
       byte instrIndex = randomInstructionIndex();
       bytecode[writePos] = instrIndex;
-      Instruction instruction = instrSet.getInstruction(ubtoi(instrIndex));
+      Instruction instruction = machine.getInstruction(ubtoi(instrIndex));
       if (instruction.getInputRegisters() > 0) {
         // there should be at least 1 calculation register
         bytecode[writePos + 1] = randomCalculationIndex();
@@ -49,9 +49,9 @@ public class SimpleIndividualInitializer implements IndividualInitializer {
         }
       }
       if (instruction.hasOutputRegister()) {
-        bytecode[writePos + instrSet.getBytesPerInstruction() - 1] = randomCalculationIndex();
+        bytecode[writePos + machine.getBytesPerInstruction() - 1] = randomCalculationIndex();
       }
-      writePos += instrSet.getBytesPerInstruction();
+      writePos += machine.getBytesPerInstruction();
     }
     return new Individual(bytecode);
   }
@@ -61,18 +61,18 @@ public class SimpleIndividualInitializer implements IndividualInitializer {
   }
 
   private byte randomInstructionIndex() {
-    int instrIndex = rng.nextInt(instrSet.size());
+    int instrIndex = rng.nextInt(machine.size());
     return (byte) instrIndex;
   }
 
   private byte randomCalculationIndex() {
-    int calcIndex = rng.nextInt(instrSet.getNumberOfCalculationRegisters());
+    int calcIndex = rng.nextInt(machine.getNumberOfCalculationRegisters());
     return (byte) calcIndex;
   }
 
   private byte randomConstantIndex() {
-    int constIndex = rng.nextInt(instrSet.getNumberOfConstantRegisters());
-    int constRegIndex = constIndex + instrSet.getNumberOfCalculationRegisters();
+    int constIndex = rng.nextInt(machine.getNumberOfConstantRegisters());
+    int constRegIndex = constIndex + machine.getNumberOfCalculationRegisters();
     return (byte) constRegIndex;
   }
 

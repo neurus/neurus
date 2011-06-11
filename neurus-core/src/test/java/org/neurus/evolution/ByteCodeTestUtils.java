@@ -4,32 +4,32 @@ import static org.neurus.util.Primitives.ubtoi;
 import junit.framework.Assert;
 
 import org.neurus.instruction.Instruction;
-import org.neurus.instruction.InstructionSet;
+import org.neurus.instruction.Machine;
 
 public class ByteCodeTestUtils {
 
-  public static Program readBytecode(byte[] bytecode, InstructionSet iSet) {
-    return new Program(bytecode, iSet);
+  public static Program readBytecode(byte[] bytecode, Machine machine) {
+    return new Program(bytecode, machine);
   }
 
   static class Program {
     private byte[] bytecode;
-    private InstructionSet iSet;
+    private Machine machine;
     private ProgramInstruction[] instructions;
 
-    private Program(byte[] bytecode, InstructionSet iSet) {
-      this.iSet = iSet;
+    private Program(byte[] bytecode, Machine machine) {
+      this.machine = machine;
       this.bytecode = bytecode;
       initializeInstructions();
     }
 
     private void initializeInstructions() {
-      int size = bytecode.length / iSet.getBytesPerInstruction();
+      int size = bytecode.length / machine.getBytesPerInstruction();
       instructions = new ProgramInstruction[size];
       int pos = 0;
       for (int x = 0; x < size; x++) {
-        instructions[x] = new ProgramInstruction(iSet, bytecode, pos);
-        pos += iSet.getBytesPerInstruction();
+        instructions[x] = new ProgramInstruction(machine, bytecode, pos);
+        pos += machine.getBytesPerInstruction();
       }
     }
 
@@ -43,27 +43,27 @@ public class ByteCodeTestUtils {
     private Instruction instruction;
     private int[] inputRegisters;
     private int[] outputRegisters;
-    private InstructionSet iSet;
+    private Machine machine;
 
-    public ProgramInstruction(InstructionSet iSet, byte[] bytecode, int pos) {
-      this.iSet = iSet;
+    public ProgramInstruction(Machine machine, byte[] bytecode, int pos) {
+      this.machine = machine;
       this.instructionIndex = ubtoi(bytecode[pos]);
-      this.instruction = iSet.getInstruction(instructionIndex);
+      this.instruction = machine.getInstruction(instructionIndex);
       this.inputRegisters = new int[this.instruction.getInputRegisters()];
       for (int i = 0; i < inputRegisters.length; i++) {
         inputRegisters[i] = ubtoi(bytecode[pos + i + 1]);
       }
       this.outputRegisters = new int[this.instruction.hasOutputRegister() ? 1 : 0];
       if (outputRegisters.length > 0) {
-        outputRegisters[0] = ubtoi(bytecode[pos + iSet.getBytesPerInstruction() - 1]);
+        outputRegisters[0] = ubtoi(bytecode[pos + machine.getBytesPerInstruction() - 1]);
         Assert.assertTrue(isCalcuation(outputRegisters[0]));
       }
     }
 
     public boolean isConstantRegister(int inputIndex) {
-      return inputRegisters[inputIndex] >= iSet.getNumberOfCalculationRegisters() &&
+      return inputRegisters[inputIndex] >= machine.getNumberOfCalculationRegisters() &&
           inputRegisters[inputIndex] <
-              (iSet.getNumberOfCalculationRegisters() + iSet.getNumberOfConstantRegisters());
+              (machine.getNumberOfCalculationRegisters() + machine.getNumberOfConstantRegisters());
     }
 
     public boolean isCalculationRegister(int inputIndex) {
@@ -71,7 +71,7 @@ public class ByteCodeTestUtils {
     }
 
     private boolean isCalcuation(int registerNumber) {
-      return registerNumber >= 0 && registerNumber < (iSet.getNumberOfCalculationRegisters());
+      return registerNumber >= 0 && registerNumber < (machine.getNumberOfCalculationRegisters());
     }
 
     public int getInstructionIndex() {

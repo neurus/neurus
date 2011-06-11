@@ -2,14 +2,14 @@ package org.neurus.instruction;
 
 import com.google.common.base.Preconditions;
 
-public class InstructionSet {
+public class Machine {
 
   private final Instruction[] instructions;
   private final int numberOfCalculationRegisters;
   private final int numberOfConstantRegisters;
   private final int bytesPerInstruction;
 
-  protected InstructionSet(Instruction[] instructions, int numberOfCalculationRegisters,
+  protected Machine(Instruction[] instructions, int numberOfCalculationRegisters,
       int numberOfConstantRegisters) {
     this.instructions = instructions;
     this.numberOfCalculationRegisters = numberOfCalculationRegisters;

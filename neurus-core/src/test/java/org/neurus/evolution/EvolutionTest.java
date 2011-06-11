@@ -3,8 +3,8 @@ package org.neurus.evolution;
 import org.junit.Test;
 import org.neurus.instruction.FakeInstruction;
 import org.neurus.instruction.Instruction;
-import org.neurus.instruction.InstructionSet;
-import org.neurus.instruction.InstructionSetBuilder;
+import org.neurus.instruction.Machine;
+import org.neurus.instruction.MachineBuilder;
 
 public class EvolutionTest {
 
@@ -13,13 +13,13 @@ public class EvolutionTest {
 
   @Test
   public void testEvolution() {
-    InstructionSet instructionSet = new InstructionSetBuilder()
+    Machine machine = new MachineBuilder()
         .withCalculationRegisters(10)
         .withConstantRegisters(20)
         .withInstruction(fakeInstruction1)
         .withInstruction(fakeInstruction2)
         .build();
-    Evolution evolution = new Evolution(instructionSet);
+    Evolution evolution = new Evolution(machine);
     evolution.evolve();
   }
 }
