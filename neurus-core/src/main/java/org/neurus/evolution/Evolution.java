@@ -1,5 +1,7 @@
 package org.neurus.evolution;
 
+import org.neurus.fitness.Fitness;
+import org.neurus.fitness.FitnessFunction;
 import org.neurus.instruction.Machine;
 import org.neurus.rng.DefaultRandomNumberGenerator;
 import org.neurus.rng.RandomNumberGenerator;
@@ -17,16 +19,30 @@ public class Evolution {
   private Machine machine;
   private PopulationFactory populationInitializer;
   private IndividualInitializer individualInitializer;
+  private EvolutionStrategy evolutionStrategy;
+  private TerminationStrategy terminationStrategy;
+  private FitnessFunction fitnessFunction;
 
   public Evolution(Machine machine) {
     this.machine = machine;
     this.rng = new DefaultRandomNumberGenerator(RNG_SEED);
-    this.individualInitializer = new SimpleIndividualInitializer( this.machine, rng,
+    this.individualInitializer = new SimpleIndividualInitializer(this.machine, rng,
         MIN_INITIALIZATION_PROGRAM_SIZE, MAX_INITIALIZATION_PROGRAM_SIZE, PCONST);
     this.populationInitializer = new PopulationFactory(individualInitializer);
   }
 
   public void evolve() {
-    populationInitializer.initialize(POPULATION_SIZE);
+    EvolutionState evolutionState = new EvolutionState();
+    Population population = populationInitializer.initialize(POPULATION_SIZE);
+    evolutionState.nextGeneration(population);
+    for(int x = 0; x < population.size(); x++){
+      Individual individual = population.get(x);
+      Fitness fitness = fitnessFunction.evaluate(individual);
+      individual.setFitness(fitness);
+    }
+    do {
+      population = evolutionStrategy.evolveOneGeneration(population);
+      evolutionState.nextGeneration(population);
+    } while (!terminationStrategy.terminate(evolutionState));
   }
 }

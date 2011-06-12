@@ -7,6 +7,7 @@ public class Machine {
   private final Instruction[] instructions;
   private final int numberOfCalculationRegisters;
   private final int numberOfConstantRegisters;
+  private final int maxInputsForASingleInstruction;
   private final int bytesPerInstruction;
 
   protected Machine(Instruction[] instructions, int numberOfCalculationRegisters,
@@ -27,12 +28,18 @@ public class Machine {
       }
     }
     bytesPerInstruction = maxInputs + maxOutputs + 1;
+    maxInputsForASingleInstruction = maxInputs;
 
     // validate that enough registers were provided
     int requiredCalcRegisters = Math.max(maxInputs, maxOutputs);
     Preconditions.checkArgument(requiredCalcRegisters <= numberOfCalculationRegisters,
             "The number of calculation registers should be greater than the number of "
                 + "inputs required for a single instruction");
+    
+  }
+
+  public ProgramRunner createRunner() {
+    return new InterpreterRunner(this);
   }
 
   public int size() {
@@ -53,5 +60,9 @@ public class Machine {
 
   public int getBytesPerInstruction() {
     return bytesPerInstruction;
+  }
+
+  public int getMaxInputsForASingleInstruction() {
+    return maxInputsForASingleInstruction;
   }
 }

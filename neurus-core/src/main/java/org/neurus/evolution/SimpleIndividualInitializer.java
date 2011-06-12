@@ -4,6 +4,7 @@ import static org.neurus.util.Primitives.ubtoi;
 
 import org.neurus.instruction.Instruction;
 import org.neurus.instruction.Machine;
+import org.neurus.instruction.Program;
 import org.neurus.rng.RandomNumberGenerator;
 
 import com.google.common.base.Preconditions;
@@ -53,7 +54,8 @@ public class SimpleIndividualInitializer implements IndividualInitializer {
       }
       writePos += machine.getBytesPerInstruction();
     }
-    return new Individual(bytecode);
+    Program program = new Program(bytecode);
+    return new Individual(program);
   }
 
   private int randomSize() {

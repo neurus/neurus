@@ -36,6 +36,15 @@ public class MachineTest {
   }
 
   @Test
+  public void testGetMaxInputsForASingleInstruction() {
+    Instruction instrWithOutput = new FakeInstruction(2, true);
+    Instruction instrWithNoOutput = new FakeInstruction(3, false);
+    Instruction[] instrs = new Instruction[] { instrWithOutput, instrWithNoOutput };
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    assertEquals(3, machine.getMaxInputsForASingleInstruction());
+  }
+
+  @Test
   public void testBytesPerInstructionWithOutput() {
     Instruction instrWithOutput = new FakeInstruction(2, true);
     Instruction instrWithNoOutput = new FakeInstruction(3, false);

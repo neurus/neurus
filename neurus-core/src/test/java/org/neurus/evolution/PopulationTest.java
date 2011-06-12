@@ -1,13 +1,14 @@
 package org.neurus.evolution;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 
 public class PopulationTest {
 
-  private Individual ind1 = new Individual(new byte[] {});
-  private Individual ind2 = new Individual(new byte[] {});
+  private Individual ind1 = mock(Individual.class);
+  private Individual ind2 = mock(Individual.class);
 
   @Test
   public void testPopulationReturnsCorrectSize() {

@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.neurus.instruction.Program;
 
 import com.google.common.collect.Lists;
 
@@ -36,7 +37,7 @@ public class PopulationFactoryTest {
 
       @Override
       public Individual answer(InvocationOnMock invocation) throws Throwable {
-        Individual i = new Individual(new byte[] {});
+        Individual i = new Individual(new Program(new byte[] {}));
         createdIndividuals.add(i);
         return i;
       }

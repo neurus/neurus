@@ -5,19 +5,20 @@ import junit.framework.Assert;
 
 import org.neurus.instruction.Instruction;
 import org.neurus.instruction.Machine;
+import org.neurus.instruction.Program;
 
 public class ByteCodeTestUtils {
 
-  public static Program readBytecode(byte[] bytecode, Machine machine) {
-    return new Program(bytecode, machine);
+  public static ProgramHelper parseProgram(Program program, Machine machine) {
+    return new ProgramHelper(program.getBytecode(), machine);
   }
 
-  static class Program {
+  static class ProgramHelper {
     private byte[] bytecode;
     private Machine machine;
-    private ProgramInstruction[] instructions;
+    private InstructionHelper[] instructions;
 
-    private Program(byte[] bytecode, Machine machine) {
+    private ProgramHelper(byte[] bytecode, Machine machine) {
       this.machine = machine;
       this.bytecode = bytecode;
       initializeInstructions();
@@ -25,27 +26,27 @@ public class ByteCodeTestUtils {
 
     private void initializeInstructions() {
       int size = bytecode.length / machine.getBytesPerInstruction();
-      instructions = new ProgramInstruction[size];
+      instructions = new InstructionHelper[size];
       int pos = 0;
       for (int x = 0; x < size; x++) {
-        instructions[x] = new ProgramInstruction(machine, bytecode, pos);
+        instructions[x] = new InstructionHelper(machine, bytecode, pos);
         pos += machine.getBytesPerInstruction();
       }
     }
 
-    public ProgramInstruction[] getInstructions() {
+    public InstructionHelper[] getInstructions() {
       return instructions;
     }
   }
 
-  static class ProgramInstruction {
+  static class InstructionHelper {
     private int instructionIndex;
     private Instruction instruction;
     private int[] inputRegisters;
     private int[] outputRegisters;
     private Machine machine;
 
-    public ProgramInstruction(Machine machine, byte[] bytecode, int pos) {
+    public InstructionHelper(Machine machine, byte[] bytecode, int pos) {
       this.machine = machine;
       this.instructionIndex = ubtoi(bytecode[pos]);
       this.instruction = machine.getInstruction(instructionIndex);

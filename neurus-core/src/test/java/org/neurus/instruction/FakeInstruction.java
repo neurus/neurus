@@ -1,27 +1,17 @@
 package org.neurus.instruction;
 
-public class FakeInstruction implements Instruction {
-
-  private int inputRegisters = 2;
-  private boolean hasOutputRegister = true;
+public class FakeInstruction extends BaseInstruction {
 
   public FakeInstruction() {
-    super();
+    super(0, false);
   }
 
   public FakeInstruction(int inputRegisters, boolean hasOutputRegister) {
-    super();
-    this.inputRegisters = inputRegisters;
-    this.hasOutputRegister = hasOutputRegister;
+    super(inputRegisters, hasOutputRegister);
   }
 
   @Override
-  public int getInputRegisters() {
-    return inputRegisters;
-  }
-
-  @Override
-  public boolean hasOutputRegister() {
-    return hasOutputRegister;
+  public double execute(double[] inputs) {
+    return 0;
   }
 }

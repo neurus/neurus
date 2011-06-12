@@ -4,7 +4,8 @@ import static junit.framework.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.neurus.evolution.ByteCodeTestUtils.ProgramInstruction;
+import org.neurus.evolution.ByteCodeTestUtils.InstructionHelper;
+import org.neurus.evolution.ByteCodeTestUtils.ProgramHelper;
 import org.neurus.instruction.FakeInstruction;
 import org.neurus.instruction.Machine;
 import org.neurus.instruction.MachineBuilder;
@@ -32,9 +33,9 @@ public class SimpleIndividualInitializerTest {
     IndividualInitializer initializer = new SimpleIndividualInitializer(machine2Inputs1Output, rng,
         10 /* min */, 10 /* max */, 1 /* pconst */);
     Individual individual = initializer.newIndividual();
-    ByteCodeTestUtils.Program program = ByteCodeTestUtils.readBytecode(individual.getByteCode(),
+    ProgramHelper program = ByteCodeTestUtils.parseProgram(individual.getProgram(),
           machine2Inputs1Output);
-    for (ProgramInstruction pi : program.getInstructions()) {
+    for (InstructionHelper pi : program.getInstructions()) {
       assertTrue(pi.isCalculationRegister(0));
       assertTrue(pi.isConstantRegister(1));
     }
@@ -45,9 +46,9 @@ public class SimpleIndividualInitializerTest {
     IndividualInitializer initializer = new SimpleIndividualInitializer(machine2Inputs1Output, rng,
         10 /* min */, 10 /* max */, 0 /* pconst */);
     Individual individual = initializer.newIndividual();
-    ByteCodeTestUtils.Program program = ByteCodeTestUtils.readBytecode(individual.getByteCode(),
-          machine2Inputs1Output);
-    for (ProgramInstruction pi : program.getInstructions()) {
+    ProgramHelper program = ByteCodeTestUtils.parseProgram(
+        individual.getProgram(), machine2Inputs1Output);
+    for (InstructionHelper pi : program.getInstructions()) {
       assertTrue(pi.isCalculationRegister(0));
       assertTrue(pi.isCalculationRegister(1));
     }
@@ -63,8 +64,8 @@ public class SimpleIndividualInitializerTest {
     boolean atLeastOneCalculation = false;
     for (int x = 0; x < 50; x++) {
       Individual individual = initializer.newIndividual();
-      ByteCodeTestUtils.Program program = ByteCodeTestUtils.readBytecode(individual.getByteCode(),
-          machine2Inputs1Output);
+      ProgramHelper program = ByteCodeTestUtils.parseProgram(
+          individual.getProgram(), machine2Inputs1Output);
       assertTrue(program.getInstructions().length >= 5);
       assertTrue(program.getInstructions().length <= 8);
       if (program.getInstructions().length == 5) {
@@ -74,7 +75,7 @@ public class SimpleIndividualInitializerTest {
         atLeastOneSizeEight = true;
       }
       for (int i = 0; i < program.getInstructions().length; i++) {
-        ProgramInstruction pi = program.getInstructions()[i];
+        InstructionHelper pi = program.getInstructions()[i];
         assertTrue(pi.isCalculationRegister(0));
         if (pi.isCalculationRegister(1)) {
           atLeastOneCalculation = true;
@@ -101,8 +102,8 @@ public class SimpleIndividualInitializerTest {
     IndividualInitializer initializer = new SimpleIndividualInitializer(noInputsNoOutputsMachine,
         rng, 10 /* min */, 10 /* max */, 0.5 /* pconst */);
     Individual individual = initializer.newIndividual();
-    ByteCodeTestUtils.Program program = ByteCodeTestUtils.readBytecode(individual.getByteCode(),
-        noInputsNoOutputsMachine);
+    ProgramHelper program = ByteCodeTestUtils.parseProgram(
+        individual.getProgram(), noInputsNoOutputsMachine);
     assertTrue(program.getInstructions().length == 10);
   }
 }

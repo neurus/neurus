@@ -6,4 +6,5 @@ public interface Instruction {
 
   boolean hasOutputRegister();
 
+  public double execute(double[] inputs);
 }

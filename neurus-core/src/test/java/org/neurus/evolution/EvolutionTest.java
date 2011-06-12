@@ -1,5 +1,6 @@
 package org.neurus.evolution;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.neurus.instruction.FakeInstruction;
 import org.neurus.instruction.Instruction;
@@ -12,6 +13,7 @@ public class EvolutionTest {
   private Instruction fakeInstruction2 = new FakeInstruction();
 
   @Test
+  @Ignore("NOT IMPLEMENTED")
   public void testEvolution() {
     Machine machine = new MachineBuilder()
         .withCalculationRegisters(10)
