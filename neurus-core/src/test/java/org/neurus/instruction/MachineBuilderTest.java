@@ -12,7 +12,7 @@ public class MachineBuilderTest {
   @Test
   public void testbuildCreatesAnInstructionSet() {
     Machine machine = new MachineBuilder()
-        .withConstantRegisters(10)
+        .withConstantRegisters(new ConstantRegisters(0, 9, 1))
         .withCalculationRegisters(8)
         .withInstruction(fakeInstruction1)
         .withInstruction(fakeInstruction2)
@@ -26,23 +26,12 @@ public class MachineBuilderTest {
 
   @Test(expected = IllegalStateException.class)
   public void testBuildFailsWhenThereAreNoInstructions() {
-    new MachineBuilder().withConstantRegisters(10)
-        .withCalculationRegisters(10).build();
+    new MachineBuilder().withCalculationRegisters(10).build();
   }
 
   @Test(expected = IllegalStateException.class)
   public void testBuildFailsWhenRegistersNotSpecified() {
     new MachineBuilder().withInstruction(fakeInstruction1).build();
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void testWithConstantRegistersFailsForNegativeValues() {
-    new MachineBuilder().withConstantRegisters(-1);
-  }
-
-  @Test
-  public void testWithConstantRegistersAllowsZero() {
-    new MachineBuilder().withConstantRegisters(0);
   }
 
   @Test(expected = NullPointerException.class)

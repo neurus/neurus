@@ -18,6 +18,11 @@ public class InterpreterRunner implements ProgramRunner {
     cacheOutputRegisters = new double[machine.getNumberOfCalculationRegisters()];
     registers = new double[machine.getNumberOfCalculationRegisters()
         + machine.getNumberOfConstantRegisters()];
+
+    // copy constant values at the end of the registers array
+    double[] constantValues = machine.getConstantRegisters().getValues();
+    System.arraycopy(constantValues, 0, registers, machine.getNumberOfCalculationRegisters(),
+        constantValues.length);
   }
 
   @Override

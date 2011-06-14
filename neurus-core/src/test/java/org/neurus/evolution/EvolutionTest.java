@@ -2,6 +2,7 @@ package org.neurus.evolution;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.neurus.instruction.ConstantRegisters;
 import org.neurus.instruction.FakeInstruction;
 import org.neurus.instruction.Instruction;
 import org.neurus.instruction.Machine;
@@ -17,7 +18,7 @@ public class EvolutionTest {
   public void testEvolution() {
     Machine machine = new MachineBuilder()
         .withCalculationRegisters(10)
-        .withConstantRegisters(20)
+        .withConstantRegisters(new ConstantRegisters())
         .withInstruction(fakeInstruction1)
         .withInstruction(fakeInstruction2)
         .build();

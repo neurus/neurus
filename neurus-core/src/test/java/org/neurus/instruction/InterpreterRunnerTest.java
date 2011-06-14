@@ -17,7 +17,7 @@ public class InterpreterRunnerTest {
   public void setUp() {
     machine = new MachineBuilder()
         .withCalculationRegisters(6)
-        .withConstantRegisters(10)
+        .withConstantRegisters(new ConstantRegisters(0, 9, 1))
         .withInstruction(addition())
         .withInstruction(substraction())
         .withInstruction(multiplication())
@@ -38,5 +38,20 @@ public class InterpreterRunnerTest {
     //if I execute the same program again, it should still give the same result
     result = runner.run(program, inputs);
     Assert.assertEquals(14d, result[0]);
+  }
+
+  @Test
+  public void testExecutionWithConstants() {
+    double[] inputs = new double [] {2, 3, 8};
+    byte[] program = new byte[] {
+        2, 0, 9, 3, //r3 = r0 * r9  --> r9 is c4=3
+        0, 3, 8, 0, //r0 = r3 + r8  --> r8 is c3=2
+    };
+    InterpreterRunner runner = new InterpreterRunner(machine);
+    double[] result = runner.run(program, inputs);
+    Assert.assertEquals(8d, result[0]);
+    //if I execute the same program again, it should still give the same result
+    result = runner.run(program, inputs);
+    Assert.assertEquals(8d, result[0]);
   }
 }

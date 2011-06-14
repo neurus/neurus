@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.neurus.evolution.ByteCodeTestUtils.InstructionHelper;
 import org.neurus.evolution.ByteCodeTestUtils.ProgramHelper;
+import org.neurus.instruction.ConstantRegisters;
 import org.neurus.instruction.FakeInstruction;
 import org.neurus.instruction.Machine;
 import org.neurus.instruction.MachineBuilder;
@@ -22,7 +23,7 @@ public class SimpleIndividualInitializerTest {
     rng = new DefaultRandomNumberGenerator(1L);
     machine2Inputs1Output = new MachineBuilder()
         .withCalculationRegisters(10)
-        .withConstantRegisters(10)
+        .withConstantRegisters(new ConstantRegisters(0, 9, 1))
         .withInstruction(new FakeInstruction(2, true))
         .withInstruction(new FakeInstruction(2, true))
         .build();
@@ -95,7 +96,6 @@ public class SimpleIndividualInitializerTest {
   public void testNewIndividualWithNoInputsAndOutputs() {
     Machine noInputsNoOutputsMachine = new MachineBuilder()
         .withCalculationRegisters(0)
-        .withConstantRegisters(0)
         .withInstruction(new FakeInstruction(0, false))
         .withInstruction(new FakeInstruction(0, false))
         .build();

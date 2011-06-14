@@ -6,15 +6,15 @@ public class Machine {
 
   private final Instruction[] instructions;
   private final int numberOfCalculationRegisters;
-  private final int numberOfConstantRegisters;
   private final int maxInputsForASingleInstruction;
   private final int bytesPerInstruction;
+  private final ConstantRegisters constantRegisters;
 
   protected Machine(Instruction[] instructions, int numberOfCalculationRegisters,
-      int numberOfConstantRegisters) {
+      ConstantRegisters constantRegisters) {
     this.instructions = instructions;
     this.numberOfCalculationRegisters = numberOfCalculationRegisters;
-    this.numberOfConstantRegisters = numberOfConstantRegisters;
+    this.constantRegisters = constantRegisters;
 
     // calculate size in bytes of an instruction
     int maxInputs = 0;
@@ -35,7 +35,7 @@ public class Machine {
     Preconditions.checkArgument(requiredCalcRegisters <= numberOfCalculationRegisters,
             "The number of calculation registers should be greater than the number of "
                 + "inputs required for a single instruction");
-    
+
   }
 
   public ProgramRunner createRunner() {
@@ -54,8 +54,8 @@ public class Machine {
     return numberOfCalculationRegisters;
   }
 
-  public int getNumberOfConstantRegisters() {
-    return numberOfConstantRegisters;
+  public ConstantRegisters getConstantRegisters() {
+    return constantRegisters;
   }
 
   public int getBytesPerInstruction() {
@@ -64,5 +64,9 @@ public class Machine {
 
   public int getMaxInputsForASingleInstruction() {
     return maxInputsForASingleInstruction;
+  }
+
+  public int getNumberOfConstantRegisters() {
+    return constantRegisters.size();
   }
 }

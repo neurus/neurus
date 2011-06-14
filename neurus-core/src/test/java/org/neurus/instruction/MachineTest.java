@@ -7,7 +7,7 @@ import org.junit.Test;
 public class MachineTest {
 
   private static final int CALCULATION_REGISTERS = 5;
-  private static final int CONSTANT_REGISTERS = 5;
+  private static final ConstantRegisters CONSTANT_REGISTERS = new ConstantRegisters(0, 4, 1);
   private Instruction fakeInstruction1 = new FakeInstruction();
   private Instruction fakeInstruction2 = new FakeInstruction();
 
@@ -32,7 +32,7 @@ public class MachineTest {
     Instruction[] instrs = new Instruction[] { fakeInstruction1, fakeInstruction2 };
     Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
     assertEquals(CALCULATION_REGISTERS, machine.getNumberOfCalculationRegisters());
-    assertEquals(CONSTANT_REGISTERS, machine.getNumberOfConstantRegisters());
+    assertEquals(5, machine.getNumberOfConstantRegisters());
   }
 
   @Test
@@ -76,6 +76,6 @@ public class MachineTest {
     Instruction instrWithNoOutput1 = new FakeInstruction(1, false);
     Instruction instrWithNoOutput2 = new FakeInstruction(2, false);
     Instruction[] instrs = new Instruction[] { instrWithNoOutput1, instrWithNoOutput2 };
-    new Machine(instrs, 1, 5);
+    new Machine(instrs, 1, CONSTANT_REGISTERS);
   }
 }

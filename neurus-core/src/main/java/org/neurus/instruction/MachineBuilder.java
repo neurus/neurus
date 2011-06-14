@@ -8,14 +8,12 @@ import com.google.common.collect.Lists;
 public class MachineBuilder {
 
   private List<Instruction> instructions = Lists.newArrayList();
-  private int constantRegisters = -1;
+  private ConstantRegisters constantRegisters = new ConstantRegisters();
   private int calculationRegisters = -1;
 
   public Machine build() {
     Preconditions.checkState(
         instructions.size() > 0, "You need to provide at least one instruction");
-    Preconditions.checkState(constantRegisters >= 0,
-        "You need to provide the number of constant registers");
     Preconditions.checkState(calculationRegisters >= 0,
         "You need to provide the number of calculation registers");
     Instruction[] instrArray = new Instruction[instructions.size()];
@@ -29,9 +27,9 @@ public class MachineBuilder {
     return this;
   }
 
-  public MachineBuilder withConstantRegisters(int registers) {
-    Preconditions.checkArgument(registers >= 0);
-    this.constantRegisters = registers;
+  public MachineBuilder withConstantRegisters(ConstantRegisters constantRegisters) {
+    Preconditions.checkNotNull(constantRegisters);
+    this.constantRegisters = constantRegisters;
     return this;
   }
 
