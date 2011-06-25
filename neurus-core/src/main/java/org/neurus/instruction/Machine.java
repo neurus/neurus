@@ -8,6 +8,7 @@ public class Machine {
   private final int numberOfCalculationRegisters;
   private final int maxInputsForASingleInstruction;
   private final int bytesPerInstruction;
+  private final boolean hasOutputRegister;
   private final ConstantRegisters constantRegisters;
 
   protected Machine(Instruction[] instructions, int numberOfCalculationRegisters,
@@ -29,6 +30,7 @@ public class Machine {
     }
     bytesPerInstruction = maxInputs + maxOutputs + 1;
     maxInputsForASingleInstruction = maxInputs;
+    hasOutputRegister = maxOutputs > 0;
 
     // validate that enough registers were provided
     int requiredCalcRegisters = Math.max(maxInputs, maxOutputs);
@@ -40,6 +42,12 @@ public class Machine {
 
   public ProgramRunner createRunner() {
     return new InterpreterRunner(this);
+  }
+
+  public InstructionData createInstructionData() {
+    InstructionData instrData = new InstructionData();
+    instrData.inputRegisters = new int[getMaxInputsForASingleInstruction()];
+    return instrData;
   }
 
   public int size() {
@@ -68,5 +76,9 @@ public class Machine {
 
   public int getNumberOfConstantRegisters() {
     return constantRegisters.size();
+  }
+
+  public boolean hasOutputRegister() {
+    return hasOutputRegister;
   }
 }

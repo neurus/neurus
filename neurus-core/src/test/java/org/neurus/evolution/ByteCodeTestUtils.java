@@ -6,14 +6,29 @@ import junit.framework.Assert;
 import org.neurus.instruction.Instruction;
 import org.neurus.instruction.Machine;
 import org.neurus.instruction.Program;
+import org.neurus.util.Primitives;
 
 public class ByteCodeTestUtils {
+
+  public static boolean isConstantRegister(Machine machine, int registerIndex) {
+    return registerIndex >= machine.getNumberOfCalculationRegisters()
+        && registerIndex
+            < (machine.getNumberOfCalculationRegisters() + machine.getNumberOfConstantRegisters());
+  }
+
+  public static boolean isConstantRegister(Machine machine, byte registerIndex) {
+    return isConstantRegister(machine, Primitives.ubtoi(registerIndex));
+  }
+
+  public static boolean isCalculationRegister(Machine machine, int registerNumber) {
+    return registerNumber >= 0 && registerNumber < (machine.getNumberOfCalculationRegisters());
+  }
 
   public static ProgramHelper parseProgram(Program program, Machine machine) {
     return new ProgramHelper(program.getBytecode(), machine);
   }
 
-  static class ProgramHelper {
+  public static class ProgramHelper {
     private byte[] bytecode;
     private Machine machine;
     private InstructionHelper[] instructions;
@@ -39,7 +54,7 @@ public class ByteCodeTestUtils {
     }
   }
 
-  static class InstructionHelper {
+  public static class InstructionHelper {
     private int instructionIndex;
     private Instruction instruction;
     private int[] inputRegisters;
@@ -57,22 +72,16 @@ public class ByteCodeTestUtils {
       this.outputRegisters = new int[this.instruction.hasOutputRegister() ? 1 : 0];
       if (outputRegisters.length > 0) {
         outputRegisters[0] = ubtoi(bytecode[pos + machine.getBytesPerInstruction() - 1]);
-        Assert.assertTrue(isCalcuation(outputRegisters[0]));
+        Assert.assertTrue(ByteCodeTestUtils.isCalculationRegister(machine, outputRegisters[0]));
       }
     }
 
     public boolean isConstantRegister(int inputIndex) {
-      return inputRegisters[inputIndex] >= machine.getNumberOfCalculationRegisters() &&
-          inputRegisters[inputIndex] <
-              (machine.getNumberOfCalculationRegisters() + machine.getNumberOfConstantRegisters());
+      return ByteCodeTestUtils.isConstantRegister(machine, inputRegisters[inputIndex]);
     }
 
     public boolean isCalculationRegister(int inputIndex) {
-      return isCalcuation(inputRegisters[inputIndex]);
-    }
-
-    private boolean isCalcuation(int registerNumber) {
-      return registerNumber >= 0 && registerNumber < (machine.getNumberOfCalculationRegisters());
+      return ByteCodeTestUtils.isCalculationRegister(machine, inputRegisters[inputIndex]);
     }
 
     public int getInstructionIndex() {

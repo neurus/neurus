@@ -1,6 +1,10 @@
 package org.neurus.instruction;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotSame;
+import static junit.framework.Assert.assertTrue;
+import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -16,8 +20,8 @@ public class MachineTest {
     Instruction[] instrs = new Instruction[] { fakeInstruction1, fakeInstruction2 };
     Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
     assertEquals(2, machine.size());
-    assertEquals(fakeInstruction1, machine.getInstruction(0));
-    assertEquals(fakeInstruction2, machine.getInstruction(1));
+    Assert.assertEquals(fakeInstruction1, machine.getInstruction(0));
+    Assert.assertEquals(fakeInstruction2, machine.getInstruction(1));
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
@@ -54,6 +58,24 @@ public class MachineTest {
   }
 
   @Test
+  public void testHasOutputRegisterReturnsTrue() {
+    Instruction instrWithNoOutput = new FakeInstruction(3, false);
+    Instruction instrWithNoOutput2 = new FakeInstruction(3, false);
+    Instruction[] instrs = new Instruction[] { instrWithNoOutput, instrWithNoOutput2 };
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    assertFalse(machine.hasOutputRegister());
+  }
+
+  @Test
+  public void testHasOutputRegisterReturnsFalse() {
+    Instruction instrWithNoOutput = new FakeInstruction(3, false);
+    Instruction instrWithOutput = new FakeInstruction(3, true);
+    Instruction[] instrs = new Instruction[] { instrWithNoOutput, instrWithOutput };
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    assertTrue(machine.hasOutputRegister());
+  }
+
+  @Test
   public void testBytesPerInstructionWithoutOutput() {
     Instruction instrWithNoOutput1 = new FakeInstruction(1, false);
     Instruction instrWithNoOutput2 = new FakeInstruction(2, false);
@@ -77,5 +99,16 @@ public class MachineTest {
     Instruction instrWithNoOutput2 = new FakeInstruction(2, false);
     Instruction[] instrs = new Instruction[] { instrWithNoOutput1, instrWithNoOutput2 };
     new Machine(instrs, 1, CONSTANT_REGISTERS);
+  }
+
+  @Test
+  public void testCreateInstructionData() {
+    Instruction instrWithOutput = new FakeInstruction(2, true);
+    Instruction instrWithNoOutput = new FakeInstruction(3, false);
+    Instruction[] instrs = new Instruction[] { instrWithOutput, instrWithNoOutput };
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    InstructionData instrData = machine.createInstructionData();
+    assertEquals(3, instrData.inputRegisters.length);
+    assertNotSame(instrData, machine.createInstructionData());
   }
 }
