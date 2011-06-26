@@ -1,6 +1,8 @@
 package org.neurus.evolution;
 
 import org.neurus.fitness.FitnessFunction;
+import org.neurus.instruction.BytecodeWriter;
+import org.neurus.instruction.InstructionRandomizer;
 import org.neurus.instruction.Machine;
 import org.neurus.rng.DefaultRandomNumberGenerator;
 import org.neurus.rng.RandomNumberGenerator;
@@ -28,9 +30,12 @@ public class EvolutionBuilder {
 
   public Evolution build() {
     RandomNumberGenerator rng = new DefaultRandomNumberGenerator(params.getRandomSeed());
-    IndividualInitializer individualInitializer = new SimpleIndividualInitializer(machine, rng,
-        params.getMinInitializationProgramSize(), params.getMaxInitializationProgramSize(),
+    BytecodeWriter bytecodeWriter = new BytecodeWriter(machine);
+    InstructionRandomizer instrRandomizer = new InstructionRandomizer(machine, rng,
         params.getConstProbability());
+    IndividualInitializer individualInitializer = new SimpleIndividualInitializer(machine, rng,
+        bytecodeWriter, instrRandomizer, params.getMinInitializationProgramSize(),
+        params.getMaxInitializationProgramSize());
     PopulationFactory populationFactory = new PopulationFactory(individualInitializer);
     TerminationStrategy termination = new DefaultTerminationStrategy();
     return new SteadyStateEvolution(machine, populationFactory, rng, fitnessFunction, termination,

@@ -17,13 +17,14 @@ public class SimpleIndividualInitializer implements IndividualInitializer {
   private BytecodeWriter bytecodeWriter;
 
   public SimpleIndividualInitializer(Machine machine, RandomNumberGenerator rng,
-      int minSize, int maxSize, double pConst) {
+      BytecodeWriter bytecodeWriter, InstructionRandomizer instrRandomizer,
+      int minSize, int maxSize) {
     this.rng = rng;
     this.minSize = minSize;
     this.maxSize = maxSize;
-    this.instrRandomizer = new InstructionRandomizer(machine, rng, pConst);
+    this.instrRandomizer = instrRandomizer;
     this.instrData = machine.createInstructionData();
-    this.bytecodeWriter = new BytecodeWriter(machine);
+    this.bytecodeWriter = bytecodeWriter;
   }
 
   public Individual newIndividual() {
