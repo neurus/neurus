@@ -5,14 +5,22 @@ public class EvolutionParameters {
   private static final int DEFAULT_POPULATION_SIZE = 50;
   private static final int DEFAULT_MIN_INITIALIZATION_PROGRAM_SIZE = 2;
   private static final int DEFAULT_MAX_INITIALIZATION_PROGRAM_SIZE = 10;
+  private static final int DEFAULT_MIN_PROGRAM_SIZE = 1;
+  private static final int DEFAULT_MAX_PROGRAM_SIZE = 200;
   private static final long DEFAULT_RNG_SEED = System.currentTimeMillis();
-  private static final double DEFAULT_CONST_PROBABILITY = 0.5d;
+  private static final double DEFAULT_CONSTANT_PROBABILITY = 0.5d;
+  private static final double DEFAULT_INSERTION_PROBABILITY = 0.5d;
+  private static final int DEFAULT_TOURNAMENT_SIZE = 2;
 
   private int populationSize = DEFAULT_POPULATION_SIZE;
   private int minInitializationProgramSize = DEFAULT_MIN_INITIALIZATION_PROGRAM_SIZE;
   private int maxInitializationProgramSize = DEFAULT_MAX_INITIALIZATION_PROGRAM_SIZE;
   private long randomSeed = DEFAULT_RNG_SEED;
-  private double constProbability = DEFAULT_CONST_PROBABILITY;
+  private int minProgramSize = DEFAULT_MIN_PROGRAM_SIZE;
+  private int maxProgramSize = DEFAULT_MAX_PROGRAM_SIZE;
+  private double insertionProbability = DEFAULT_INSERTION_PROBABILITY;
+  private double constantProbability = DEFAULT_CONSTANT_PROBABILITY;
+  private int tournamentSize = DEFAULT_TOURNAMENT_SIZE;
 
   public int getPopulationSize() {
     return populationSize;
@@ -46,11 +54,43 @@ public class EvolutionParameters {
     this.randomSeed = randomSeed;
   }
 
-  public double getConstProbability() {
-    return constProbability;
+  public double getConstantProbability() {
+    return constantProbability;
   }
 
-  public void setConstProbability(double constProbability) {
-    this.constProbability = constProbability;
+  public void setConstantProbability(double constProbability) {
+    this.constantProbability = constProbability;
+  }
+
+  public int getTournamentSize() {
+    return tournamentSize;
+  }
+
+  public void setTournamentSize(int tournamentSize) {
+    this.tournamentSize = tournamentSize;
+  }
+
+  public int getMinProgramSize() {
+    return minProgramSize;
+  }
+
+  public void setMinProgramSize(int minProgramSize) {
+    this.minProgramSize = minProgramSize;
+  }
+
+  public int getMaxProgramSize() {
+    return maxProgramSize;
+  }
+
+  public void setMaxProgramSize(int maxProgramSize) {
+    this.maxProgramSize = maxProgramSize;
+  }
+
+  public double getInsertionProbability() {
+    return insertionProbability;
+  }
+
+  public void setInsertionProbability(double insertionProbability) {
+    this.insertionProbability = insertionProbability;
   }
 }
