@@ -24,7 +24,7 @@ public class TournamentSelection implements SelectionMethod {
 
   @Override
   public int select(Population population) {
-    double bestFitness = selectWorst ? Double.MIN_VALUE : Double.MAX_VALUE;
+    double bestFitness = selectWorst ? -1 : Double.MAX_VALUE;
     int winner = -1;
     for (int x = 0; x < tournamentSize; x++) {
       int individualIndex = rng.nextInt(population.size());

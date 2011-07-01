@@ -1,6 +1,7 @@
 package org.neurus.evolution;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,6 +46,18 @@ public class TournamentSelectionTest {
     // select, the third element should win
     assertEquals(3, ts.select(population));
     verify(rng, times(3)).nextInt(population.size());
+  }
+
+  @Test
+  public void testTournamentSelectionSelectsWorstForZeroFitness() {
+    TournamentSelection ts = new TournamentSelection(rng, 2, true);
+    population.get(3).setFitness(new Fitness(0));
+    population.get(5).setFitness(new Fitness(0));
+    // ensure that individuals 3 and 5 get picked for the tournament
+    when(rng.nextInt(population.size())).thenReturn(3, 5);
+    // either 3 or 5 should win
+    int selected = ts.select(population); 
+    assertTrue(selected == 3 || selected == 5);
   }
 
   private Population createFakePopulation(int populationSize) {
