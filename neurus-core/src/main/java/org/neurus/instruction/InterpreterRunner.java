@@ -26,7 +26,8 @@ public class InterpreterRunner implements ProgramRunner {
   }
 
   @Override
-  public double[] run(byte[] bytecode, double[] inputs) {
+  public double[] run(Program program, double[] inputs) {
+    byte[] bytecode = program.getBytecode();
     setInputsAndCleanCalculationRegisters(inputs);
     double[] instrInputs = new double[machine.getMaxInputsForASingleInstruction()];
     int totalInstructions = bytecode.length / machine.getBytesPerInstruction();
