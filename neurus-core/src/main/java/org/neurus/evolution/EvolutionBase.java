@@ -3,6 +3,7 @@ package org.neurus.evolution;
 import org.neurus.fitness.Fitness;
 import org.neurus.fitness.FitnessFunction;
 import org.neurus.instruction.Machine;
+import org.neurus.instruction.ProgramRunner;
 import org.neurus.rng.RandomNumberGenerator;
 
 public abstract class EvolutionBase implements Evolution {
@@ -13,12 +14,15 @@ public abstract class EvolutionBase implements Evolution {
   protected final TerminationStrategy terminationStrategy;
   protected final FitnessFunction fitnessFunction;
   protected final EvolutionParameters params;
+  protected final ProgramRunner programRunner;
+  protected final EvolutionListener evolutionListener;
 
   protected EvolutionState evolutionState;
 
   public EvolutionBase(Machine machine, PopulationFactory populationFactory,
       RandomNumberGenerator rng, FitnessFunction fitnessFunction,
-      TerminationStrategy terminationStrategy, EvolutionParameters params) {
+      TerminationStrategy terminationStrategy, EvolutionParameters params,
+      EvolutionListener evolutionListener) {
     super();
     this.machine = machine;
     this.populationFactory = populationFactory;
@@ -26,12 +30,17 @@ public abstract class EvolutionBase implements Evolution {
     this.terminationStrategy = terminationStrategy;
     this.fitnessFunction = fitnessFunction;
     this.params = params;
+    this.programRunner = machine.createRunner();
+    this.evolutionListener = evolutionListener;
   }
 
   public void evolve() {
     createInitialGeneration();
+    evolutionListener.onNewGeneration(evolutionState);
     while (!terminationStrategy.terminate(evolutionState)) {
-      evolveOneGeneration();
+      Population newPopulation = evolveOneGeneration();
+      evolutionState.nextGeneration(newPopulation);
+      evolutionListener.onNewGeneration(evolutionState);
     }
   }
 
@@ -44,7 +53,7 @@ public abstract class EvolutionBase implements Evolution {
     // evaluate fitness of each individual
     for (int x = 0; x < population.size(); x++) {
       Individual individual = population.get(x);
-      Fitness fitness = fitnessFunction.evaluate(individual);
+      Fitness fitness = fitnessFunction.evaluate(programRunner, individual);
       individual.setFitness(fitness);
     }
 
@@ -57,5 +66,5 @@ public abstract class EvolutionBase implements Evolution {
     return evolutionState;
   }
 
-  protected abstract void evolveOneGeneration();
+  protected abstract Population evolveOneGeneration();
 }

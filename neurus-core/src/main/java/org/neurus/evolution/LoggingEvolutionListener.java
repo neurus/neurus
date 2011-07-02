@@ -18,7 +18,8 @@ public class LoggingEvolutionListener implements EvolutionListener {
       best = Math.min(fit, best);
     }
     double average = totalFitness / evolutionState.getPopulation().size();
-    logger.info("Generation: " + evolutionState.getGeneration() + ". Average fitness: "
-        + decimalFormat.format(average) + ". Best: " + decimalFormat.format(best));
+    logger.info("Generation: " + evolutionState.getGeneration()
+        + ". Best: "  + decimalFormat.format(best)
+        + " Average fitness: " + decimalFormat.format(average));
   }
 }

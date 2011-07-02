@@ -12,9 +12,9 @@ import org.neurus.rng.RandomNumberGenerator;
 
 public class EvolutionBuilder {
 
-  private EvolutionParameters params;
+  private EvolutionParameters params = new EvolutionParameters();
   private Machine machine;
-  private FitnessFunction fitnessFunction;
+  private FitnessFunction fitnessFunction;  
 
   public EvolutionBuilder withFitnessFunction(FitnessFunction fitnessFunction) {
     this.fitnessFunction = fitnessFunction;
@@ -26,7 +26,7 @@ public class EvolutionBuilder {
     return this;
   }
 
-  public EvolutionBuilder withEvolutionParameters(Machine machine) {
+  public EvolutionBuilder withMachine(Machine machine) {
     this.machine = machine;
     return this;
   }
@@ -48,8 +48,9 @@ public class EvolutionBuilder {
     MacroMutation macroMutation = new MacroMutation(machine, rng, params.getInsertionProbability(),
         params.getMinProgramSize(), params.getMaxProgramSize(), bytecodeWriter,
         instructionRandomizer);
+    EvolutionListener evolutionListener = new LoggingEvolutionListener();
     Breeder breeder = new CompositeBreeder.Builder(rng).withBreeder(macroMutation, 1).build();
     return new SteadyStateEvolution(machine, populationFactory, rng, fitnessFunction, termination,
-        params, selector, deselector, breeder);
+        params, selector, deselector, breeder, evolutionListener);
   }
 }

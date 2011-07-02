@@ -14,4 +14,13 @@ public class TestPopulations {
     }
     return new Population(individuals);
   }
+
+  public static Population populationOfSize(int size) {
+    Individual[] individuals = new Individual[size];
+    for (int x = 0; x < individuals.length; x++) {
+      Individual individual = new Individual(new Program(new byte[] {}));
+      individuals[x] = individual;
+    }
+    return new Population(individuals);
+  }
 }

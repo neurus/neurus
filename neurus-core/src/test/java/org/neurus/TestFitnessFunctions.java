@@ -3,6 +3,7 @@ package org.neurus;
 import org.neurus.evolution.Individual;
 import org.neurus.fitness.Fitness;
 import org.neurus.fitness.FitnessFunction;
+import org.neurus.instruction.ProgramRunner;
 
 public class TestFitnessFunctions {
 
@@ -10,7 +11,7 @@ public class TestFitnessFunctions {
     return new FitnessFunction() {
 
       @Override
-      public Fitness evaluate(Individual individual) {
+      public Fitness evaluate(ProgramRunner programRunner, Individual individual) {
         return new Fitness(fitnessValue);
       }
     };

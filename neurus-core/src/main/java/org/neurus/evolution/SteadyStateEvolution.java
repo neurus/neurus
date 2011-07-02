@@ -1,6 +1,7 @@
 package org.neurus.evolution;
 
 import org.neurus.breeder.Breeder;
+import org.neurus.fitness.Fitness;
 import org.neurus.fitness.FitnessFunction;
 import org.neurus.instruction.Machine;
 import org.neurus.rng.RandomNumberGenerator;
@@ -14,15 +15,17 @@ public class SteadyStateEvolution extends EvolutionBase {
   public SteadyStateEvolution(Machine machine, PopulationFactory populationFactory,
       RandomNumberGenerator rng, FitnessFunction fitnessFunction,
       TerminationStrategy terminationStrategy, EvolutionParameters params,
-      SelectionMethod selector, SelectionMethod deselector, Breeder breeder) {
-    super(machine, populationFactory, rng, fitnessFunction, terminationStrategy, params);
+      SelectionMethod selector, SelectionMethod deselector, Breeder breeder,
+      EvolutionListener evolutionListener) {
+    super(machine, populationFactory, rng, fitnessFunction, terminationStrategy, params,
+        evolutionListener);
     this.selector = selector;
     this.deselector = deselector;
     this.breeder = breeder;
   }
 
   @Override
-  protected void evolveOneGeneration() {
+  protected Population evolveOneGeneration() {
     Population newPop = new Population(evolutionState.getPopulation());
     int individualsGenerated = 0;
     while (individualsGenerated < newPop.size()) {
@@ -34,13 +37,17 @@ public class SteadyStateEvolution extends EvolutionBase {
         parents[i] = newPop.get(parentsIndexes[i]);
       }
       Individual[] newIndividuals = breeder.breed(parents);
-
+      for (int i = 0; i < newIndividuals.length; i++) {
+        Fitness fitness = fitnessFunction.evaluate(programRunner, newIndividuals[i]);
+        newIndividuals[i].setFitness(fitness);
+      }
       int individualsToBeDiscarded = newIndividuals.length;
       for (int i = 0; i < individualsToBeDiscarded; i++) {
         int toBeDiscardedIndex = deselector.select(newPop);
         newPop.replace(toBeDiscardedIndex, newIndividuals[i]);
+        individualsGenerated++;
       }
     }
-    evolutionState.nextGeneration(newPop);
+    return newPop;
   }
 }
