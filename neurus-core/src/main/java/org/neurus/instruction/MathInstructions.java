@@ -28,7 +28,7 @@ public class MathInstructions {
 
       @Override
       public double execute(double[] inputs) {
-        return inputs[0] * inputs[1];
+        return protectedResult(inputs[0] * inputs[1]);
       }
     };
   }
@@ -39,8 +39,15 @@ public class MathInstructions {
 
       @Override
       public double execute(double[] inputs) {
-        return inputs[0] * inputs[1];
+        return protectedResult(inputs[0] / inputs[1]);
       }
     };
+  }
+
+  public static double protectedResult(double output) {
+    if(Double.isInfinite(output) || Double.isNaN(output)) {
+      return 0;
+    }
+    return output;
   }
 }
