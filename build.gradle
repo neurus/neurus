@@ -33,5 +33,11 @@ subprojects {
     testCompile libraries.junit
     testCompile libraries.mockito
   }
+
+  buildscript {
+    // using a variable to make wiki look cleaner
+    def githubBase = 'https://github.com/valkolovos/gradle_cobertura/raw/master/ivy'
+    apply from: "${githubBase}/gradle_cobertura/gradle_cobertura/1.0-rc4/coberturainit.gradle"
+  }
 }
 
