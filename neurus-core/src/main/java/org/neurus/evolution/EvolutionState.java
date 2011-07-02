@@ -2,6 +2,8 @@ package org.neurus.evolution;
 
 public class EvolutionState {
 
+  // TODO Make this immutable or return copies in Evolution?
+
   private int generationNumber = -1;
   private Population population;
 

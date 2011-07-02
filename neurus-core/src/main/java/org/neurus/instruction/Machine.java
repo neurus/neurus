@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 
 public class Machine {
 
+  // TODO Verify limits on number of instructions and registers (127, 255, etc)
+
   private final Instruction[] instructions;
   private final int numberOfCalculationRegisters;
   private final int maxInputsForASingleInstruction;
