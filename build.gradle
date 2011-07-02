@@ -35,7 +35,8 @@ subprojects {
   }
 
   buildscript {
-    // using a variable to make wiki look cleaner
+    // Apply cobertura test coverage report to subprojects
+    // The code will only be instrumented if cobertura is in the task graph
     def githubBase = 'https://github.com/valkolovos/gradle_cobertura/raw/master/ivy'
     apply from: "${githubBase}/gradle_cobertura/gradle_cobertura/1.0-rc4/coberturainit.gradle"
   }
