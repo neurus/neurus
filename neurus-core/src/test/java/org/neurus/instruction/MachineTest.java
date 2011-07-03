@@ -11,6 +11,7 @@ import org.junit.Test;
 public class MachineTest {
 
   private static final int CALCULATION_REGISTERS = 5;
+  private static final int OUTPUT_REGISTERS = 2;
   private static final ConstantRegisters CONSTANT_REGISTERS = new ConstantRegisters(0, 4, 1);
   private Instruction fakeInstruction1 = new FakeInstruction();
   private Instruction fakeInstruction2 = new FakeInstruction();
@@ -18,7 +19,8 @@ public class MachineTest {
   @Test
   public void testGetInstructionAndSizeReturnCorrectValues() {
     Instruction[] instrs = new Instruction[] { fakeInstruction1, fakeInstruction2 };
-    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS,
+        OUTPUT_REGISTERS);
     assertEquals(2, machine.size());
     Assert.assertEquals(fakeInstruction1, machine.getInstruction(0));
     Assert.assertEquals(fakeInstruction2, machine.getInstruction(1));
@@ -27,14 +29,16 @@ public class MachineTest {
   @Test(expected = IndexOutOfBoundsException.class)
   public void testGetInstructionThrowsIndexOutOfBoundsForInvalidIndex() {
     Instruction[] instrs = new Instruction[] { fakeInstruction1, fakeInstruction2 };
-    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS,
+        OUTPUT_REGISTERS);
     machine.getInstruction(2);
   }
 
   @Test
   public void testRegisterValues() {
     Instruction[] instrs = new Instruction[] { fakeInstruction1, fakeInstruction2 };
-    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS,
+        OUTPUT_REGISTERS);
     assertEquals(CALCULATION_REGISTERS, machine.getNumberOfCalculationRegisters());
     assertEquals(5, machine.getNumberOfConstantRegisters());
   }
@@ -44,7 +48,8 @@ public class MachineTest {
     Instruction instrWithDestination = new FakeInstruction(2, true);
     Instruction instrWithNoDestination = new FakeInstruction(3, false);
     Instruction[] instrs = new Instruction[] { instrWithDestination, instrWithNoDestination };
-    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS,
+        OUTPUT_REGISTERS);
     assertEquals(3, machine.getMaxInputsForASingleInstruction());
   }
 
@@ -53,7 +58,8 @@ public class MachineTest {
     Instruction instrWithDestination = new FakeInstruction(2, true);
     Instruction instrWithNoDestination = new FakeInstruction(3, false);
     Instruction[] instrs = new Instruction[] { instrWithDestination, instrWithNoDestination };
-    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS,
+        OUTPUT_REGISTERS);
     assertEquals(5 /* 1 instr, 3 inputs, 1 destination */, machine.getBytesPerInstruction());
   }
 
@@ -62,7 +68,8 @@ public class MachineTest {
     Instruction instrWithNoDestination = new FakeInstruction(3, false);
     Instruction instrWithNoDestination2 = new FakeInstruction(3, false);
     Instruction[] instrs = new Instruction[] { instrWithNoDestination, instrWithNoDestination2 };
-    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS,
+        OUTPUT_REGISTERS);
     assertFalse(machine.hasDestinationRegister());
   }
 
@@ -71,7 +78,8 @@ public class MachineTest {
     Instruction instrWithNoDestination = new FakeInstruction(3, false);
     Instruction instrWithDestination = new FakeInstruction(3, true);
     Instruction[] instrs = new Instruction[] { instrWithNoDestination, instrWithDestination };
-    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS,
+        OUTPUT_REGISTERS);
     assertTrue(machine.hasDestinationRegister());
   }
 
@@ -80,7 +88,8 @@ public class MachineTest {
     Instruction instrWithNoDestination1 = new FakeInstruction(1, false);
     Instruction instrWithNoDestination2 = new FakeInstruction(2, false);
     Instruction[] instrs = new Instruction[] { instrWithNoDestination1, instrWithNoDestination2 };
-    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS,
+        OUTPUT_REGISTERS);
     assertEquals(3 /* 1 instr, 2 inputs */, machine.getBytesPerInstruction());
   }
 
@@ -89,7 +98,8 @@ public class MachineTest {
     Instruction instrWithNoDestination1 = new FakeInstruction(0, false);
     Instruction instrWithNoDestination2 = new FakeInstruction(0, false);
     Instruction[] instrs = new Instruction[] { instrWithNoDestination1, instrWithNoDestination2 };
-    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS,
+        OUTPUT_REGISTERS);
     assertEquals(1, machine.getBytesPerInstruction());
   }
 
@@ -98,7 +108,7 @@ public class MachineTest {
     Instruction instrWithNoDestination1 = new FakeInstruction(1, false);
     Instruction instrWithNoDestination2 = new FakeInstruction(2, false);
     Instruction[] instrs = new Instruction[] { instrWithNoDestination1, instrWithNoDestination2 };
-    new Machine(instrs, 1, CONSTANT_REGISTERS);
+    new Machine(instrs, 1, CONSTANT_REGISTERS, OUTPUT_REGISTERS);
   }
 
   @Test
@@ -106,9 +116,19 @@ public class MachineTest {
     Instruction instrWithDestination = new FakeInstruction(2, true);
     Instruction instrWithNoDestination = new FakeInstruction(3, false);
     Instruction[] instrs = new Instruction[] { instrWithDestination, instrWithNoDestination };
-    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS);
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS,
+        OUTPUT_REGISTERS);
     InstructionData instrData = machine.createInstructionData();
     assertEquals(3, instrData.inputRegisters.length);
     assertNotSame(instrData, machine.createInstructionData());
+  }
+
+  @Test
+  public void testGetOutputRegisters() {
+    Instruction instrWithDestination = new FakeInstruction(2, true);
+    Instruction[] instrs = new Instruction[] { instrWithDestination };
+    Machine machine = new Machine(instrs, CALCULATION_REGISTERS, CONSTANT_REGISTERS,
+        OUTPUT_REGISTERS);
+    assertEquals(OUTPUT_REGISTERS, machine.getNumberOfOutputRegisters());
   }
 }

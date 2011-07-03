@@ -10,6 +10,7 @@ public class TestMachines {
         .withInstruction(MathInstructions.substraction())
         .withInstruction(MathInstructions.multiplication())
         .withInstruction(MathInstructions.division())
+        .withOutputRegisters(1)
         .build();
   }
 
@@ -19,6 +20,7 @@ public class TestMachines {
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))
         .withInstruction(new FakeInstruction(0, false))
         .withInstruction(new FakeInstruction(0, false))
+        .withOutputRegisters(1)
         .build();
   }
 }

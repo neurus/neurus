@@ -24,7 +24,7 @@ public class InterpreterRunner implements ProgramRunner {
     this.machine = machine;
     this.cleanCalculationRegisters = new double[machine.getNumberOfCalculationRegisters()];
     Arrays.fill(cleanCalculationRegisters, 0d);
-    cacheOutputRegisters = new double[machine.getNumberOfCalculationRegisters()];
+    cacheOutputRegisters = new double[machine.getNumberOfOutputRegisters()];
     registers = new double[machine.getNumberOfCalculationRegisters()
         + machine.getNumberOfConstantRegisters()];
 

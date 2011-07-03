@@ -22,6 +22,7 @@ public class PolynomialExample {
         .withInstruction(MathInstructions.substraction())
         .withInstruction(MathInstructions.multiplication())
         .withInstruction(MathInstructions.division())
+        .withOutputRegisters(1)
         .build();
     Evolution evolution = new EvolutionBuilder().withMachine(machine)
         .withFitnessFunction(new MseFitnessFunction(values)).build();

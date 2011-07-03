@@ -24,12 +24,14 @@ public class InterpreterRunnerTest {
         .withInstruction(substraction())
         .withInstruction(multiplication())
         .withInstruction(division())
+        .withOutputRegisters(1)
         .build();
     logicMachine = new MachineBuilder()
         .withCalculationRegisters(6)
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))
         .withInstruction(addition())
         .withInstruction(ifGreaterThan())
+        .withOutputRegisters(1)
         .build();
   }
 

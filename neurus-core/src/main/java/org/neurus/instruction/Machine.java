@@ -8,16 +8,18 @@ public class Machine {
 
   private final Instruction[] instructions;
   private final int numberOfCalculationRegisters;
+  private final int numberOfOutputRegisters;
   private final int maxInputsForASingleInstruction;
   private final int bytesPerInstruction;
   private final boolean hasDestinationRegister;
   private final ConstantRegisters constantRegisters;
 
   protected Machine(Instruction[] instructions, int numberOfCalculationRegisters,
-      ConstantRegisters constantRegisters) {
+      ConstantRegisters constantRegisters, int numberOfOutputRegisters) {
     this.instructions = instructions;
     this.numberOfCalculationRegisters = numberOfCalculationRegisters;
     this.constantRegisters = constantRegisters;
+    this.numberOfOutputRegisters = numberOfOutputRegisters;
 
     // calculate size in bytes of an instruction
     int maxInputs = 0;
@@ -82,5 +84,9 @@ public class Machine {
 
   public boolean hasDestinationRegister() {
     return hasDestinationRegister;
+  }
+
+  public int getNumberOfOutputRegisters() {
+    return numberOfOutputRegisters;
   }
 }
