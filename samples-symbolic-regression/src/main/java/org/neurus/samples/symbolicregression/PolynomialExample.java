@@ -62,12 +62,13 @@ class MseFitnessFunction implements FitnessFunction {
 
   @Override
   public Fitness evaluate(ProgramRunner programRunner, Individual individual) {
+    programRunner.load(individual.getProgram());
     double error = 0;
     for (int i = 0; i < values.length; i++) {
       for (int j = 0; j < inputs.length; j++) {
         inputs[j] = values[i][j];
       }
-      double[] output = programRunner.run(individual.getProgram(), inputs);
+      double[] output = programRunner.run(inputs);
       error += Math.pow(output[0] - values[i][inputs.length], 2);
     }
     if(Double.isInfinite(error) || Double.isNaN(error)) {

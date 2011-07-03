@@ -14,4 +14,9 @@ public class FakeInstruction extends BaseInstruction {
   public double execute(double[] inputs) {
     return 0;
   }
+
+  @Override
+  public boolean isBranching() {
+    return false;
+  }
 }

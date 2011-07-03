@@ -4,12 +4,21 @@ import static org.neurus.util.Primitives.ubtoi;
 
 import java.util.Arrays;
 
+import com.google.common.base.Preconditions;
+
 public class InterpreterRunner implements ProgramRunner {
 
   private Machine machine;
   private double[] cleanCalculationRegisters;
   private double[] registers;
   private double[] cacheOutputRegisters;
+
+  // loaded program variables
+  private boolean loaded;
+  private byte[] bytecode;
+  private double[] instrInputs;
+  private int totalInstructions;
+  private int pointer;
 
   public InterpreterRunner(Machine machine) {
     this.machine = machine;
@@ -25,29 +34,60 @@ public class InterpreterRunner implements ProgramRunner {
         constantValues.length);
   }
 
+  public void load(Program program) {
+    bytecode = program.getBytecode();
+    instrInputs = new double[machine.getMaxInputsForASingleInstruction()];
+    totalInstructions = bytecode.length / machine.getBytesPerInstruction();
+    loaded = true;
+  }
+
   @Override
-  public double[] run(Program program, double[] inputs) {
-    byte[] bytecode = program.getBytecode();
+  public double[] run(double[] inputs) {
+    Preconditions.checkState(loaded, "You should load a program before calling run()");
     setInputsAndCleanCalculationRegisters(inputs);
-    double[] instrInputs = new double[machine.getMaxInputsForASingleInstruction()];
-    int totalInstructions = bytecode.length / machine.getBytesPerInstruction();
-    int programLine = 0;
-    while (programLine < totalInstructions) {
-      int address = programLine * machine.getBytesPerInstruction();
-      Instruction instr = machine.getInstruction(ubtoi(bytecode[address]));
-      for (int i = 0; i < instr.getInputRegisters(); i++) {
-        int regIndex = ubtoi(bytecode[address + i + 1]);
-        instrInputs[i] = registers[regIndex];
+    pointer = 0;
+    while (pointer < totalInstructions) {
+      Instruction instr = instructionAtPointer();
+      double output = executeInstruction(instr);
+      if (instr.isBranching() && output == Instruction.FALSE) {
+        skipNextNonBranchingInstruction();
       }
-      double output = instr.execute(instrInputs);
-      if (instr.hasOutputRegister()) {
-        int regIndex = ubtoi(bytecode[address + machine.getBytesPerInstruction() - 1]);
-        registers[regIndex] = output;
-      }
-      programLine++;
+      pointer++;
     }
-    System.arraycopy(registers, 0, cacheOutputRegisters, 0, cacheOutputRegisters.length);
+    loadCachedOutputRegisters();
     return cacheOutputRegisters;
+  }
+
+  private int pointerAddress() {
+    return pointer * machine.getBytesPerInstruction();
+  }
+
+  private void skipNextNonBranchingInstruction() {
+    do {
+      pointer++;
+    } while (pointer < totalInstructions && instructionAtPointer().isBranching());
+  }
+
+  private Instruction instructionAtPointer() {
+    return machine.getInstruction(ubtoi(bytecode[pointerAddress()]));
+  }
+
+  private void loadCachedOutputRegisters() {
+    System.arraycopy(registers, 0, cacheOutputRegisters, 0, cacheOutputRegisters.length);
+  }
+
+  private double executeInstruction(Instruction instr) {
+    int address = pointerAddress();
+    for (int i = 0; i < instr.getInputRegisters(); i++) {
+      int regIndex = ubtoi(bytecode[address + i + 1]);
+      instrInputs[i] = registers[regIndex];
+    }
+    double output = instr.execute(instrInputs);
+    if (instr.hasOutputRegister()) {
+      int regIndex = ubtoi(bytecode[address + machine.getBytesPerInstruction() - 1]);
+      registers[regIndex] = output;
+    }
+    return output;
   }
 
   private void setInputsAndCleanCalculationRegisters(double[] inputs) {

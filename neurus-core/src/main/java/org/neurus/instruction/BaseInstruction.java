@@ -18,4 +18,9 @@ public abstract class BaseInstruction implements Instruction {
   public boolean hasOutputRegister() {
     return hasOutputRegister;
   }
+
+  @Override
+  public boolean isBranching() {
+    return false;
+  }
 }
