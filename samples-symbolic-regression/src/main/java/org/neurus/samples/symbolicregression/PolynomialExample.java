@@ -71,9 +71,7 @@ class MseFitnessFunction implements FitnessFunction {
       double[] output = programRunner.run(inputs);
       error += Math.pow(output[0] - values[i][inputs.length], 2);
     }
-    if(Double.isInfinite(error) || Double.isNaN(error)) {
-      error = Double.MAX_VALUE;
-    }
+    error = error / values.length;
     return new Fitness(error);
   }
 }
