@@ -10,7 +10,7 @@ public class Machine {
   private final int numberOfCalculationRegisters;
   private final int maxInputsForASingleInstruction;
   private final int bytesPerInstruction;
-  private final boolean hasOutputRegister;
+  private final boolean hasDestinationRegister;
   private final ConstantRegisters constantRegisters;
 
   protected Machine(Instruction[] instructions, int numberOfCalculationRegisters,
@@ -21,21 +21,21 @@ public class Machine {
 
     // calculate size in bytes of an instruction
     int maxInputs = 0;
-    int maxOutputs = 0;
+    int maxDestinationRegisters = 0;
     for (Instruction i : instructions) {
       if (i.getInputRegisters() > maxInputs) {
         maxInputs = i.getInputRegisters();
       }
-      if (i.hasOutputRegister()) {
-        maxOutputs = 1;
+      if (i.hasDestinationRegister()) {
+        maxDestinationRegisters = 1;
       }
     }
-    bytesPerInstruction = maxInputs + maxOutputs + 1;
+    bytesPerInstruction = maxInputs + maxDestinationRegisters + 1;
     maxInputsForASingleInstruction = maxInputs;
-    hasOutputRegister = maxOutputs > 0;
+    hasDestinationRegister = maxDestinationRegisters > 0;
 
     // validate that enough registers were provided
-    int requiredCalcRegisters = Math.max(maxInputs, maxOutputs);
+    int requiredCalcRegisters = Math.max(maxInputs, maxDestinationRegisters);
     Preconditions.checkArgument(requiredCalcRegisters <= numberOfCalculationRegisters,
             "The number of calculation registers should be greater than the number of "
                 + "inputs required for a single instruction");
@@ -80,7 +80,7 @@ public class Machine {
     return constantRegisters.size();
   }
 
-  public boolean hasOutputRegister() {
-    return hasOutputRegister;
+  public boolean hasDestinationRegister() {
+    return hasDestinationRegister;
   }
 }

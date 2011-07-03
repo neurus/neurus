@@ -6,8 +6,8 @@ public class FakeInstruction extends BaseInstruction {
     super(0, false);
   }
 
-  public FakeInstruction(int inputRegisters, boolean hasOutputRegister) {
-    super(inputRegisters, hasOutputRegister);
+  public FakeInstruction(int inputRegisters, boolean hasDestinationRegister) {
+    super(inputRegisters, hasDestinationRegister);
   }
 
   @Override

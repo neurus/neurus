@@ -7,7 +7,7 @@ public interface Instruction {
 
   int getInputRegisters();
 
-  boolean hasOutputRegister();
+  boolean hasDestinationRegister();
 
   public double execute(double[] inputs);
 

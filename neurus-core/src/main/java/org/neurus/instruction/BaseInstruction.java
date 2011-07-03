@@ -3,20 +3,20 @@ package org.neurus.instruction;
 public abstract class BaseInstruction implements Instruction {
 
   private int inputRegisters;
-  private boolean hasOutputRegister;
+  private boolean hasDestinationRegister;
 
-  public BaseInstruction(int inputRegisters, boolean hasOutputRegister) {
+  public BaseInstruction(int inputRegisters, boolean hasDestinationRegister) {
     super();
     this.inputRegisters = inputRegisters;
-    this.hasOutputRegister = hasOutputRegister;
+    this.hasDestinationRegister = hasDestinationRegister;
   }
 
   public int getInputRegisters() {
     return inputRegisters;
   }
 
-  public boolean hasOutputRegister() {
-    return hasOutputRegister;
+  public boolean hasDestinationRegister() {
+    return hasDestinationRegister;
   }
 
   @Override

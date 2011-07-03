@@ -63,13 +63,13 @@ public class BytecodeWriterTest {
     Assert.assertTrue(Arrays.equals(expected, writer.getBytecode()));
   }
 
-  private void writeInstruction(int instr, int[] inputs, int output) {
+  private void writeInstruction(int instr, int[] inputs, int destination) {
     InstructionData instrData = calculatorMachine.createInstructionData();
     instrData.instructionIndex = instr;
     for (int x = 0; x < inputs.length; x++) {
       instrData.inputRegisters[x] = inputs[x];
     }
-    instrData.outputRegister = output;
+    instrData.destinationRegister = destination;
     writer.writeInstruction(instrData);
   }
 }

@@ -58,7 +58,7 @@ public class ByteCodeTestUtils {
     private int instructionIndex;
     private Instruction instruction;
     private int[] inputRegisters;
-    private int[] outputRegisters;
+    private int[] destinationRegisters;
     private Machine machine;
 
     public InstructionHelper(Machine machine, byte[] bytecode, int pos) {
@@ -69,10 +69,10 @@ public class ByteCodeTestUtils {
       for (int i = 0; i < inputRegisters.length; i++) {
         inputRegisters[i] = ubtoi(bytecode[pos + i + 1]);
       }
-      this.outputRegisters = new int[this.instruction.hasOutputRegister() ? 1 : 0];
-      if (outputRegisters.length > 0) {
-        outputRegisters[0] = ubtoi(bytecode[pos + machine.getBytesPerInstruction() - 1]);
-        Assert.assertTrue(ByteCodeTestUtils.isCalculationRegister(machine, outputRegisters[0]));
+      this.destinationRegisters = new int[this.instruction.hasDestinationRegister() ? 1 : 0];
+      if (destinationRegisters.length > 0) {
+        destinationRegisters[0] = ubtoi(bytecode[pos + machine.getBytesPerInstruction() - 1]);
+        Assert.assertTrue(ByteCodeTestUtils.isCalculationRegister(machine, destinationRegisters[0]));
       }
     }
 
@@ -96,8 +96,8 @@ public class ByteCodeTestUtils {
       return inputRegisters;
     }
 
-    public int[] getOutputRegisters() {
-      return outputRegisters;
+    public int[] getDestinationRegisters() {
+      return destinationRegisters;
     }
   }
 }

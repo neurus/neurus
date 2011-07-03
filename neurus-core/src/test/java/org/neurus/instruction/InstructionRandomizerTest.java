@@ -62,9 +62,9 @@ public class InstructionRandomizerTest {
   }
 
   @Test
-  public void testInstrWithNoInputsAndOutputs() {
-    Machine noInputsNoOutputsMachine = TestMachines.twoInstrnoInputsNoOutputs();
-    InstructionData instrData = noInputsNoOutputsMachine.createInstructionData();
+  public void testInstrWithNoInputsAndNoDestinations() {
+    Machine noInputsNoDestinationsMachine = TestMachines.twoInstrnoInputsNoDestination();
+    InstructionData instrData = noInputsNoDestinationsMachine.createInstructionData();
     InstructionRandomizer instrRandomizer = new InstructionRandomizer(calculatorMachine, rng, 0.5d);
     for (int x = 0; x < 10; x++) {
       instrRandomizer.fillRandomInstruction(instrData);

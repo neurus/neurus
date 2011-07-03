@@ -33,8 +33,8 @@ public class InstructionRandomizer {
         }
       }
     }
-    if (machine.hasOutputRegister()) {
-      instructionData.outputRegister = randomCalculationIndex();
+    if (machine.hasDestinationRegister()) {
+      instructionData.destinationRegister = randomCalculationIndex();
     }
   }
 

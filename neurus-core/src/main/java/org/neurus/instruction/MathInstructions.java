@@ -44,10 +44,10 @@ public class MathInstructions {
     };
   }
 
-  public static double protectedResult(double output) {
-    if(Double.isInfinite(output) || Double.isNaN(output)) {
+  public static double protectedResult(double result) {
+    if(Double.isInfinite(result) || Double.isNaN(result)) {
       return 0;
     }
-    return output;
+    return result;
   }
 }

@@ -13,7 +13,7 @@ public class TestMachines {
         .build();
   }
 
-  public static Machine twoInstrnoInputsNoOutputs() {
+  public static Machine twoInstrnoInputsNoDestination() {
     return new MachineBuilder()
         .withCalculationRegisters(10)
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))

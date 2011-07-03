@@ -48,8 +48,8 @@ public class InterpreterRunner implements ProgramRunner {
     pointer = 0;
     while (pointer < totalInstructions) {
       Instruction instr = instructionAtPointer();
-      double output = executeInstruction(instr);
-      if (instr.isBranching() && output == Instruction.FALSE) {
+      double result = executeInstruction(instr);
+      if (instr.isBranching() && result == Instruction.FALSE) {
         skipNextNonBranchingInstruction();
       }
       pointer++;
@@ -82,12 +82,12 @@ public class InterpreterRunner implements ProgramRunner {
       int regIndex = ubtoi(bytecode[address + i + 1]);
       instrInputs[i] = registers[regIndex];
     }
-    double output = instr.execute(instrInputs);
-    if (instr.hasOutputRegister()) {
+    double result = instr.execute(instrInputs);
+    if (instr.hasDestinationRegister()) {
       int regIndex = ubtoi(bytecode[address + machine.getBytesPerInstruction() - 1]);
-      registers[regIndex] = output;
+      registers[regIndex] = result;
     }
-    return output;
+    return result;
   }
 
   private void setInputsAndCleanCalculationRegisters(double[] inputs) {

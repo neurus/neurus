@@ -150,7 +150,7 @@ public class MacroMutationTest {
         data.instructionIndex = 0;
         data.inputRegisters[0] = 1;
         data.inputRegisters[1] = 2;
-        data.outputRegister = 3;
+        data.destinationRegister = 3;
         return null;
       }
     };

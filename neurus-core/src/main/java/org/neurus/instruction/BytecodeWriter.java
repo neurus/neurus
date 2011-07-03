@@ -22,8 +22,8 @@ public class BytecodeWriter {
     for (int i = 0; i < instructionData.inputRegisters.length; i++) {
       bytecode[pointer++] = (byte) instructionData.inputRegisters[i];
     }
-    if (machine.hasOutputRegister()) {
-      bytecode[pointer++] = (byte) instructionData.outputRegister;
+    if (machine.hasDestinationRegister()) {
+      bytecode[pointer++] = (byte) instructionData.destinationRegister;
     }
   }
 
