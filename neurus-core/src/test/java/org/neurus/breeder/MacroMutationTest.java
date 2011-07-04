@@ -13,12 +13,12 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.neurus.evolution.Individual;
-import org.neurus.instruction.BytecodeWriter;
-import org.neurus.instruction.InstructionData;
-import org.neurus.instruction.InstructionRandomizer;
-import org.neurus.instruction.Machine;
-import org.neurus.instruction.Program;
-import org.neurus.instruction.TestMachines;
+import org.neurus.machine.BytecodeWriter;
+import org.neurus.machine.InstructionData;
+import org.neurus.machine.InstructionRandomizer;
+import org.neurus.machine.Machine;
+import org.neurus.machine.Program;
+import org.neurus.machine.TestMachines;
 import org.neurus.rng.RandomNumberGenerator;
 
 public class MacroMutationTest {
@@ -147,7 +147,7 @@ public class MacroMutationTest {
       @Override
       public Object answer(InvocationOnMock invocation) throws Throwable {
         InstructionData data = (InstructionData) invocation.getArguments()[0];
-        data.instructionIndex = 0;
+        data.operatorIndex = 0;
         data.inputRegisters[0] = 1;
         data.inputRegisters[1] = 2;
         data.destinationRegister = 3;

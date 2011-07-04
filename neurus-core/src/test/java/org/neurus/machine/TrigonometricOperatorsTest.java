@@ -1,12 +1,12 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import static junit.framework.Assert.assertEquals;
-import static org.neurus.instruction.TrigonometricInstructions.sin;
-import static org.neurus.instruction.TrigonometricInstructions.cos;
+import static org.neurus.machine.TrigonometricOperators.cos;
+import static org.neurus.machine.TrigonometricOperators.sin;
 
 import org.junit.Test;
 
-public class TrigonometricInstructionsTest {
+public class TrigonometricOperatorsTest {
 
   @Test
   public void testSin() {

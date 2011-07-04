@@ -1,4 +1,4 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 public class Program {
 

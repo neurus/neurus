@@ -1,19 +1,24 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import static junit.framework.Assert.assertTrue;
-import static org.neurus.instruction.LogicInstructions.ifEquals;
-import static org.neurus.instruction.LogicInstructions.ifGreaterThan;
-import static org.neurus.instruction.LogicInstructions.ifLessThan;
-import static org.neurus.instruction.MathInstructions.addition;
-import static org.neurus.instruction.MathInstructions.division;
-import static org.neurus.instruction.MathInstructions.multiplication;
-import static org.neurus.instruction.MathInstructions.substraction;
-import static org.neurus.instruction.TrigonometricInstructions.sin;
+import static org.neurus.machine.LogicOperators.ifEquals;
+import static org.neurus.machine.LogicOperators.ifGreaterThan;
+import static org.neurus.machine.LogicOperators.ifLessThan;
+import static org.neurus.machine.MathOperators.addition;
+import static org.neurus.machine.MathOperators.division;
+import static org.neurus.machine.MathOperators.multiplication;
+import static org.neurus.machine.MathOperators.substraction;
+import static org.neurus.machine.TrigonometricOperators.sin;
 
 import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.neurus.machine.CodeEffectiveness;
+import org.neurus.machine.ConstantRegisters;
+import org.neurus.machine.Machine;
+import org.neurus.machine.MachineBuilder;
+import org.neurus.machine.Program;
 
 public class CodeEffectivenessTest {
 
@@ -24,14 +29,14 @@ public class CodeEffectivenessTest {
     machine = new MachineBuilder()
         .withCalculationRegisters(10)
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))
-        .withInstruction(addition())
-        .withInstruction(substraction())
-        .withInstruction(multiplication())
-        .withInstruction(division())
-        .withInstruction(ifEquals())
-        .withInstruction(ifGreaterThan())
-        .withInstruction(ifLessThan())
-        .withInstruction(sin())
+        .withOperator(addition())
+        .withOperator(substraction())
+        .withOperator(multiplication())
+        .withOperator(division())
+        .withOperator(ifEquals())
+        .withOperator(ifGreaterThan())
+        .withOperator(ifLessThan())
+        .withOperator(sin())
         .withOutputRegisters(1)
         .build();
   }

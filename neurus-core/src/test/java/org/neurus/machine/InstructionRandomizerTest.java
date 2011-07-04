@@ -1,4 +1,4 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import static junit.framework.Assert.assertTrue;
 import static org.neurus.evolution.ByteCodeTestUtils.isCalculationRegister;
@@ -6,6 +6,9 @@ import static org.neurus.evolution.ByteCodeTestUtils.isConstantRegister;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.neurus.machine.InstructionData;
+import org.neurus.machine.InstructionRandomizer;
+import org.neurus.machine.Machine;
 import org.neurus.rng.DefaultRandomNumberGenerator;
 import org.neurus.rng.RandomNumberGenerator;
 

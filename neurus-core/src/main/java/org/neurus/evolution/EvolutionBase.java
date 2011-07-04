@@ -2,8 +2,8 @@ package org.neurus.evolution;
 
 import org.neurus.fitness.Fitness;
 import org.neurus.fitness.FitnessFunction;
-import org.neurus.instruction.Machine;
-import org.neurus.instruction.ProgramRunner;
+import org.neurus.machine.Machine;
+import org.neurus.machine.ProgramRunner;
 import org.neurus.rng.RandomNumberGenerator;
 
 public abstract class EvolutionBase implements Evolution {

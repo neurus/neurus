@@ -1,4 +1,9 @@
-package org.neurus.instruction;
+package org.neurus.machine;
+
+import org.neurus.machine.ConstantRegisters;
+import org.neurus.machine.Machine;
+import org.neurus.machine.MachineBuilder;
+import org.neurus.machine.MathOperators;
 
 public class TestMachines {
 
@@ -6,10 +11,10 @@ public class TestMachines {
     return new MachineBuilder()
         .withCalculationRegisters(10)
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))
-        .withInstruction(MathInstructions.addition())
-        .withInstruction(MathInstructions.substraction())
-        .withInstruction(MathInstructions.multiplication())
-        .withInstruction(MathInstructions.division())
+        .withOperator(MathOperators.addition())
+        .withOperator(MathOperators.substraction())
+        .withOperator(MathOperators.multiplication())
+        .withOperator(MathOperators.division())
         .withOutputRegisters(1)
         .build();
   }
@@ -18,8 +23,8 @@ public class TestMachines {
     return new MachineBuilder()
         .withCalculationRegisters(10)
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))
-        .withInstruction(new FakeInstruction(0, false))
-        .withInstruction(new FakeInstruction(0, false))
+        .withOperator(new FakeOperator(0, false))
+        .withOperator(new FakeOperator(0, false))
         .withOutputRegisters(1)
         .build();
   }

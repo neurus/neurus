@@ -1,12 +1,12 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import com.google.common.base.Preconditions;
 
 public class Machine {
 
-  // TODO Verify limits on number of instructions and registers (127, 255, etc)
+  // TODO Verify limits on number of operators and registers (127, 255, etc)
 
-  private final Instruction[] instructions;
+  private final Operator[] operators;
   private final int numberOfCalculationRegisters;
   private final int numberOfOutputRegisters;
   private final int maxInputsForASingleInstruction;
@@ -14,9 +14,9 @@ public class Machine {
   private final boolean hasDestinationRegister;
   private final ConstantRegisters constantRegisters;
 
-  protected Machine(Instruction[] instructions, int numberOfCalculationRegisters,
+  protected Machine(Operator[] operators, int numberOfCalculationRegisters,
       ConstantRegisters constantRegisters, int numberOfOutputRegisters) {
-    this.instructions = instructions;
+    this.operators = operators;
     this.numberOfCalculationRegisters = numberOfCalculationRegisters;
     this.constantRegisters = constantRegisters;
     this.numberOfOutputRegisters = numberOfOutputRegisters;
@@ -24,7 +24,7 @@ public class Machine {
     // calculate size in bytes of an instruction
     int maxInputs = 0;
     int maxDestinationRegisters = 0;
-    for (Instruction i : instructions) {
+    for (Operator i : operators) {
       if (i.getInputRegisters() > maxInputs) {
         maxInputs = i.getInputRegisters();
       }
@@ -55,11 +55,11 @@ public class Machine {
   }
 
   public int size() {
-    return instructions.length;
+    return operators.length;
   }
 
-  public Instruction getInstruction(int index) {
-    return instructions[index];
+  public Operator getOperator(int index) {
+    return operators[index];
   }
 
   public int getNumberOfCalculationRegisters() {

@@ -1,44 +1,48 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.neurus.machine.ConstantRegisters;
+import org.neurus.machine.Machine;
+import org.neurus.machine.MachineBuilder;
+import org.neurus.machine.Operator;
 
 public class MachineBuilderTest {
 
-  private Instruction fakeInstruction1 = new FakeInstruction();
-  private Instruction fakeInstruction2 = new FakeInstruction();
+  private Operator fakeOperator1 = new FakeOperator();
+  private Operator fakeOperator2 = new FakeOperator();
 
   @Test
-  public void testbuildCreatesAnInstructionSet() {
+  public void testbuildCreatesAMachine() {
     Machine machine = new MachineBuilder()
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))
         .withCalculationRegisters(8)
-        .withInstruction(fakeInstruction1)
-        .withInstruction(fakeInstruction2)
+        .withOperator(fakeOperator1)
+        .withOperator(fakeOperator2)
         .withOutputRegisters(3)
         .build();
     Assert.assertEquals(2, machine.size());
-    Assert.assertEquals(fakeInstruction1, machine.getInstruction(0));
-    Assert.assertEquals(fakeInstruction2, machine.getInstruction(1));
+    Assert.assertEquals(fakeOperator1, machine.getOperator(0));
+    Assert.assertEquals(fakeOperator2, machine.getOperator(1));
     Assert.assertEquals(8, machine.getNumberOfCalculationRegisters());
     Assert.assertEquals(10, machine.getNumberOfConstantRegisters());
     Assert.assertEquals(3, machine.getNumberOfOutputRegisters());
   }
 
   @Test(expected = IllegalStateException.class)
-  public void testBuildFailsWhenThereAreNoInstructions() {
+  public void testBuildFailsWhenThereAreNoOperators() {
     new MachineBuilder().withCalculationRegisters(10).withOutputRegisters(3).build();
   }
 
   @Test(expected = IllegalStateException.class)
   public void testBuildFailsWhenRegistersNotSpecified() {
-    new MachineBuilder().withInstruction(fakeInstruction1).withOutputRegisters(3).build();
+    new MachineBuilder().withOperator(fakeOperator1).withOutputRegisters(3).build();
   }
 
   @Test(expected = NullPointerException.class)
-  public void testWithInstructionFailsWhenGivenNullInstruction() {
-    new MachineBuilder().withInstruction(null);
+  public void testWithOperatorFailsWhenGivenNullOperator() {
+    new MachineBuilder().withOperator(null);
   }
 
   @Test(expected = IllegalStateException.class)

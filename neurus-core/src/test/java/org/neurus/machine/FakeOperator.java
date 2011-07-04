@@ -1,12 +1,14 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
-public class FakeInstruction extends BaseInstruction {
+import org.neurus.machine.BaseOperator;
 
-  public FakeInstruction() {
+public class FakeOperator extends BaseOperator {
+
+  public FakeOperator() {
     super(0, false);
   }
 
-  public FakeInstruction(int inputRegisters, boolean hasDestinationRegister) {
+  public FakeOperator(int inputRegisters, boolean hasDestinationRegister) {
     super(inputRegisters, hasDestinationRegister);
   }
 

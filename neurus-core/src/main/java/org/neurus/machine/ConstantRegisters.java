@@ -1,4 +1,4 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

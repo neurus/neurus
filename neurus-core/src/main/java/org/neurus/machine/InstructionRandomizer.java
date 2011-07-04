@@ -1,4 +1,4 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import org.neurus.rng.RandomNumberGenerator;
 
@@ -20,7 +20,7 @@ public class InstructionRandomizer {
   }
 
   public void fillRandomInstruction(InstructionData instructionData) {
-    instructionData.instructionIndex = randomInstructionIndex();
+    instructionData.operatorIndex = randomOperatorIndex();
     if (instructionData.inputRegisters.length > 0) {
       // there should be at least 1 calculation register
       instructionData.inputRegisters[0] = randomCalculationIndex();
@@ -38,9 +38,9 @@ public class InstructionRandomizer {
     }
   }
 
-  private byte randomInstructionIndex() {
-    int instrIndex = rng.nextInt(machine.size());
-    return (byte) instrIndex;
+  private byte randomOperatorIndex() {
+    int operatorIndex = rng.nextInt(machine.size());
+    return (byte) operatorIndex;
   }
 
   private byte randomCalculationIndex() {

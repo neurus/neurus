@@ -1,4 +1,4 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import static org.neurus.util.Primitives.ubtoi;
 
@@ -52,8 +52,8 @@ public class CodeEffectiveness {
   private void markInputRegistersAsEffective(byte[] bytecode, int pointer,
       boolean[] effectiveRegisters) {
     int address = address(pointer);
-    Instruction instr = instructionAtPointer(pointer, bytecode);
-    for (int i = 0; i < instr.getInputRegisters(); i++) {
+    Operator operator = operatorAtPointer(pointer, bytecode);
+    for (int i = 0; i < operator.getInputRegisters(); i++) {
       int regIndex = ubtoi(bytecode[address + i + 1]);
       if (regIndex < machine.getNumberOfCalculationRegisters()) {
         effectiveRegisters[regIndex] = true;
@@ -66,7 +66,7 @@ public class CodeEffectiveness {
     int marked = 0;
     while (true) {
       pointer--;
-      if (pointer < 0 || !instructionAtPointer(pointer, bytecode).isBranching()) {
+      if (pointer < 0 || !operatorAtPointer(pointer, bytecode).isBranching()) {
         break;
       }
       effectiveInstructions[pointer] = true;
@@ -76,8 +76,8 @@ public class CodeEffectiveness {
   }
 
   private int currentDestinationRegister(int linePointer, byte[] bytecode) {
-    Instruction instr = instructionAtPointer(linePointer, bytecode);
-    if (!instr.hasDestinationRegister()) {
+    Operator operator = operatorAtPointer(linePointer, bytecode);
+    if (!operator.hasDestinationRegister()) {
       return -1;
     }
     int destRegAddress = linePointer * bpi + bpi - 1;
@@ -91,8 +91,8 @@ public class CodeEffectiveness {
     return effectiveRegisters[destinationRegister];
   }
 
-  private Instruction instructionAtPointer(int pointer, byte[] bytecode) {
-    return machine.getInstruction(ubtoi(bytecode[address(pointer)]));
+  private Operator operatorAtPointer(int pointer, byte[] bytecode) {
+    return machine.getOperator(ubtoi(bytecode[address(pointer)]));
   }
 
   private int address(int pointer) {

@@ -3,7 +3,7 @@ package org.neurus;
 import org.neurus.evolution.Individual;
 import org.neurus.fitness.Fitness;
 import org.neurus.fitness.FitnessFunction;
-import org.neurus.instruction.ProgramRunner;
+import org.neurus.machine.ProgramRunner;
 
 public class TestFitnessFunctions {
 

@@ -1,7 +1,7 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 public class InstructionData {
-  public int instructionIndex;
+  public int operatorIndex;
   public int[] inputRegisters;
   public int destinationRegister;
 }

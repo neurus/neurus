@@ -3,7 +3,7 @@ package org.neurus.evolution;
 import org.neurus.breeder.Breeder;
 import org.neurus.fitness.Fitness;
 import org.neurus.fitness.FitnessFunction;
-import org.neurus.instruction.Machine;
+import org.neurus.machine.Machine;
 import org.neurus.rng.RandomNumberGenerator;
 
 public class SteadyStateEvolution extends EvolutionBase {

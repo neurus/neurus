@@ -1,9 +1,9 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
-public class TrigonometricInstructions {
+public class TrigonometricOperators {
 
-  public static Instruction sin() {
-    return new BaseInstruction(1, true) {
+  public static Operator sin() {
+    return new BaseOperator(1, true) {
 
       @Override
       public double execute(double[] inputs) {
@@ -12,8 +12,8 @@ public class TrigonometricInstructions {
     };
   }
 
-  public static Instruction cos() {
-    return new BaseInstruction(1, true) {
+  public static Operator cos() {
+    return new BaseOperator(1, true) {
 
       @Override
       public double execute(double[] inputs) {

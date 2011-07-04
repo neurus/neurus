@@ -1,11 +1,11 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
-public abstract class BaseInstruction implements Instruction {
+public abstract class BaseOperator implements Operator {
 
   private int inputRegisters;
   private boolean hasDestinationRegister;
 
-  public BaseInstruction(int inputRegisters, boolean hasDestinationRegister) {
+  public BaseOperator(int inputRegisters, boolean hasDestinationRegister) {
     super();
     this.inputRegisters = inputRegisters;
     this.hasDestinationRegister = hasDestinationRegister;

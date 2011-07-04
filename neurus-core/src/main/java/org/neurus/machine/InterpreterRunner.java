@@ -1,4 +1,4 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import static org.neurus.util.Primitives.ubtoi;
 
@@ -47,9 +47,9 @@ public class InterpreterRunner implements ProgramRunner {
     setInputsAndCleanCalculationRegisters(inputs);
     pointer = 0;
     while (pointer < totalInstructions) {
-      Instruction instr = instructionAtPointer();
-      double result = executeInstruction(instr);
-      if (instr.isBranching() && result == Instruction.FALSE) {
+      Operator operator = operatorAtPointer();
+      double result = executeInstruction(operator);
+      if (operator.isBranching() && result == Operator.FALSE) {
         skipNextNonBranchingInstruction();
       }
       pointer++;
@@ -65,25 +65,25 @@ public class InterpreterRunner implements ProgramRunner {
   private void skipNextNonBranchingInstruction() {
     do {
       pointer++;
-    } while (pointer < totalInstructions && instructionAtPointer().isBranching());
+    } while (pointer < totalInstructions && operatorAtPointer().isBranching());
   }
 
-  private Instruction instructionAtPointer() {
-    return machine.getInstruction(ubtoi(bytecode[pointerAddress()]));
+  private Operator operatorAtPointer() {
+    return machine.getOperator(ubtoi(bytecode[pointerAddress()]));
   }
 
   private void loadCachedOutputRegisters() {
     System.arraycopy(registers, 0, cacheOutputRegisters, 0, cacheOutputRegisters.length);
   }
 
-  private double executeInstruction(Instruction instr) {
+  private double executeInstruction(Operator operator) {
     int address = pointerAddress();
-    for (int i = 0; i < instr.getInputRegisters(); i++) {
+    for (int i = 0; i < operator.getInputRegisters(); i++) {
       int regIndex = ubtoi(bytecode[address + i + 1]);
       instrInputs[i] = registers[regIndex];
     }
-    double result = instr.execute(instrInputs);
-    if (instr.hasDestinationRegister()) {
+    double result = operator.execute(instrInputs);
+    if (operator.hasDestinationRegister()) {
       int regIndex = ubtoi(bytecode[address + machine.getBytesPerInstruction() - 1]);
       registers[regIndex] = result;
     }

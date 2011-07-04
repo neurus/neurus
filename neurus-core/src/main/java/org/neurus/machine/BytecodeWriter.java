@@ -1,4 +1,4 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 public class BytecodeWriter {
 
@@ -18,7 +18,7 @@ public class BytecodeWriter {
   }
 
   public void writeInstruction(InstructionData instructionData) {
-    bytecode[pointer++] = (byte) instructionData.instructionIndex;
+    bytecode[pointer++] = (byte) instructionData.operatorIndex;
     for (int i = 0; i < instructionData.inputRegisters.length; i++) {
       bytecode[pointer++] = (byte) instructionData.inputRegisters[i];
     }

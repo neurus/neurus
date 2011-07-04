@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 import org.neurus.fitness.Fitness;
-import org.neurus.instruction.Program;
+import org.neurus.machine.Program;
 import org.neurus.rng.RandomNumberGenerator;
 
 public class TournamentSelectionTest {

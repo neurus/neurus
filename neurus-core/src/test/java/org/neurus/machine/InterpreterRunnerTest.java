@@ -1,14 +1,19 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import static junit.framework.Assert.assertEquals;
-import static org.neurus.instruction.LogicInstructions.ifGreaterThan;
-import static org.neurus.instruction.MathInstructions.addition;
-import static org.neurus.instruction.MathInstructions.division;
-import static org.neurus.instruction.MathInstructions.multiplication;
-import static org.neurus.instruction.MathInstructions.substraction;
+import static org.neurus.machine.LogicOperators.ifGreaterThan;
+import static org.neurus.machine.MathOperators.addition;
+import static org.neurus.machine.MathOperators.division;
+import static org.neurus.machine.MathOperators.multiplication;
+import static org.neurus.machine.MathOperators.substraction;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.neurus.machine.ConstantRegisters;
+import org.neurus.machine.InterpreterRunner;
+import org.neurus.machine.Machine;
+import org.neurus.machine.MachineBuilder;
+import org.neurus.machine.Program;
 
 public class InterpreterRunnerTest {
 
@@ -20,17 +25,17 @@ public class InterpreterRunnerTest {
     calculatorMachine = new MachineBuilder()
         .withCalculationRegisters(6)
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))
-        .withInstruction(addition())
-        .withInstruction(substraction())
-        .withInstruction(multiplication())
-        .withInstruction(division())
+        .withOperator(addition())
+        .withOperator(substraction())
+        .withOperator(multiplication())
+        .withOperator(division())
         .withOutputRegisters(1)
         .build();
     logicMachine = new MachineBuilder()
         .withCalculationRegisters(6)
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))
-        .withInstruction(addition())
-        .withInstruction(ifGreaterThan())
+        .withOperator(addition())
+        .withOperator(ifGreaterThan())
         .withOutputRegisters(1)
         .build();
   }

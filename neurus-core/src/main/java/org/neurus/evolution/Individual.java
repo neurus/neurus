@@ -1,7 +1,7 @@
 package org.neurus.evolution;
 
 import org.neurus.fitness.Fitness;
-import org.neurus.instruction.Program;
+import org.neurus.machine.Program;
 
 public class Individual {
 

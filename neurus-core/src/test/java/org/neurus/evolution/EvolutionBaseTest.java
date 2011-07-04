@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.mockito.stubbing.OngoingStubbing;
 import org.neurus.TestFitnessFunctions;
 import org.neurus.fitness.FitnessFunction;
-import org.neurus.instruction.Machine;
+import org.neurus.machine.Machine;
 import org.neurus.rng.DefaultRandomNumberGenerator;
 import org.neurus.rng.RandomNumberGenerator;
 

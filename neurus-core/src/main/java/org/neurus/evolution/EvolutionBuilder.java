@@ -4,9 +4,9 @@ import org.neurus.breeder.Breeder;
 import org.neurus.breeder.CompositeBreeder;
 import org.neurus.breeder.MacroMutation;
 import org.neurus.fitness.FitnessFunction;
-import org.neurus.instruction.BytecodeWriter;
-import org.neurus.instruction.InstructionRandomizer;
-import org.neurus.instruction.Machine;
+import org.neurus.machine.BytecodeWriter;
+import org.neurus.machine.InstructionRandomizer;
+import org.neurus.machine.Machine;
 import org.neurus.rng.DefaultRandomNumberGenerator;
 import org.neurus.rng.RandomNumberGenerator;
 

@@ -8,7 +8,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.neurus.instruction.Program;
+import org.neurus.machine.Program;
 
 import com.google.common.collect.Lists;
 

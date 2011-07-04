@@ -1,6 +1,6 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
-public interface Instruction {
+public interface Operator {
 
   static final double FALSE = 0d;
   static final double TRUE = 1d;

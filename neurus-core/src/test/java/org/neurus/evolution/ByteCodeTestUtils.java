@@ -3,9 +3,9 @@ package org.neurus.evolution;
 import static org.neurus.util.Primitives.ubtoi;
 import junit.framework.Assert;
 
-import org.neurus.instruction.Instruction;
-import org.neurus.instruction.Machine;
-import org.neurus.instruction.Program;
+import org.neurus.machine.Machine;
+import org.neurus.machine.Operator;
+import org.neurus.machine.Program;
 import org.neurus.util.Primitives;
 
 public class ByteCodeTestUtils {
@@ -56,7 +56,7 @@ public class ByteCodeTestUtils {
 
   public static class InstructionHelper {
     private int instructionIndex;
-    private Instruction instruction;
+    private Operator instruction;
     private int[] inputRegisters;
     private int[] destinationRegisters;
     private Machine machine;
@@ -64,7 +64,7 @@ public class ByteCodeTestUtils {
     public InstructionHelper(Machine machine, byte[] bytecode, int pos) {
       this.machine = machine;
       this.instructionIndex = ubtoi(bytecode[pos]);
-      this.instruction = machine.getInstruction(instructionIndex);
+      this.instruction = machine.getOperator(instructionIndex);
       this.inputRegisters = new int[this.instruction.getInputRegisters()];
       for (int i = 0; i < inputRegisters.length; i++) {
         inputRegisters[i] = ubtoi(bytecode[pos + i + 1]);
@@ -88,7 +88,7 @@ public class ByteCodeTestUtils {
       return instructionIndex;
     }
 
-    public Instruction getInstruction() {
+    public Operator getInstruction() {
       return instruction;
     }
 

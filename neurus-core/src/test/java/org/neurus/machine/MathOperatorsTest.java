@@ -1,14 +1,14 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import static junit.framework.Assert.assertEquals;
-import static org.neurus.instruction.MathInstructions.addition;
-import static org.neurus.instruction.MathInstructions.division;
-import static org.neurus.instruction.MathInstructions.multiplication;
-import static org.neurus.instruction.MathInstructions.substraction;
+import static org.neurus.machine.MathOperators.addition;
+import static org.neurus.machine.MathOperators.division;
+import static org.neurus.machine.MathOperators.multiplication;
+import static org.neurus.machine.MathOperators.substraction;
 
 import org.junit.Test;
 
-public class MathInstructionsTest {
+public class MathOperatorsTest {
 
   @Test
   public void testAddition() {

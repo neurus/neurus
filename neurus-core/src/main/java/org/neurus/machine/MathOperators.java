@@ -1,9 +1,9 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
-public class MathInstructions {
+public class MathOperators {
 
-  public static Instruction addition() {
-    return new BaseInstruction(2, true) {
+  public static Operator addition() {
+    return new BaseOperator(2, true) {
 
       @Override
       public double execute(double[] inputs) {
@@ -12,8 +12,8 @@ public class MathInstructions {
     };
   }
 
-  public static Instruction substraction() {
-    return new BaseInstruction(2, true) {
+  public static Operator substraction() {
+    return new BaseOperator(2, true) {
 
       @Override
       public double execute(double[] inputs) {
@@ -23,8 +23,8 @@ public class MathInstructions {
   }
 
 
-  public static Instruction multiplication() {
-    return new BaseInstruction(2, true) {
+  public static Operator multiplication() {
+    return new BaseOperator(2, true) {
 
       @Override
       public double execute(double[] inputs) {
@@ -34,8 +34,8 @@ public class MathInstructions {
   }
 
 
-  public static Instruction division() {
-    return new BaseInstruction(2, true) {
+  public static Operator division() {
+    return new BaseOperator(2, true) {
 
       @Override
       public double execute(double[] inputs) {

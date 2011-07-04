@@ -1,4 +1,4 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import static junit.framework.Assert.assertTrue;
 
@@ -8,6 +8,9 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.neurus.machine.BytecodeWriter;
+import org.neurus.machine.InstructionData;
+import org.neurus.machine.Machine;
 
 public class BytecodeWriterTest {
 
@@ -65,7 +68,7 @@ public class BytecodeWriterTest {
 
   private void writeInstruction(int instr, int[] inputs, int destination) {
     InstructionData instrData = calculatorMachine.createInstructionData();
-    instrData.instructionIndex = instr;
+    instrData.operatorIndex = instr;
     for (int x = 0; x < inputs.length; x++) {
       instrData.inputRegisters[x] = inputs[x];
     }

@@ -5,11 +5,11 @@ import org.neurus.evolution.EvolutionBuilder;
 import org.neurus.evolution.Individual;
 import org.neurus.fitness.Fitness;
 import org.neurus.fitness.FitnessFunction;
-import org.neurus.instruction.ConstantRegisters;
-import org.neurus.instruction.Machine;
-import org.neurus.instruction.MachineBuilder;
-import org.neurus.instruction.MathInstructions;
-import org.neurus.instruction.ProgramRunner;
+import org.neurus.machine.ConstantRegisters;
+import org.neurus.machine.Machine;
+import org.neurus.machine.MachineBuilder;
+import org.neurus.machine.MathOperators;
+import org.neurus.machine.ProgramRunner;
 
 public class PolynomialExample {
 
@@ -18,10 +18,10 @@ public class PolynomialExample {
     Machine machine = new MachineBuilder()
         .withCalculationRegisters(10)
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))
-        .withInstruction(MathInstructions.addition())
-        .withInstruction(MathInstructions.substraction())
-        .withInstruction(MathInstructions.multiplication())
-        .withInstruction(MathInstructions.division())
+        .withOperator(MathOperators.addition())
+        .withOperator(MathOperators.substraction())
+        .withOperator(MathOperators.multiplication())
+        .withOperator(MathOperators.division())
         .withOutputRegisters(1)
         .build();
     Evolution evolution = new EvolutionBuilder().withMachine(machine)

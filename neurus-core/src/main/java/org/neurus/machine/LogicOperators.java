@@ -1,9 +1,9 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
-public class LogicInstructions {
+public class LogicOperators {
 
-  public static Instruction ifEquals() {
-    return new BranchingInstruction(2) {
+  public static Operator ifEquals() {
+    return new BranchingOperator(2) {
 
       @Override
       public double execute(double[] inputs) {
@@ -12,8 +12,8 @@ public class LogicInstructions {
     };
   }
 
-  public static Instruction ifGreaterThan() {
-    return new BranchingInstruction(2) {
+  public static Operator ifGreaterThan() {
+    return new BranchingOperator(2) {
 
       @Override
       public double execute(double[] inputs) {
@@ -22,8 +22,8 @@ public class LogicInstructions {
     };
   }
 
-  public static Instruction ifLessThan() {
-    return new BranchingInstruction(2) {
+  public static Operator ifLessThan() {
+    return new BranchingOperator(2) {
 
       @Override
       public double execute(double[] inputs) {

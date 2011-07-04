@@ -1,4 +1,4 @@
-package org.neurus.instruction;
+package org.neurus.machine;
 
 import java.util.List;
 
@@ -7,14 +7,14 @@ import com.google.common.collect.Lists;
 
 public class MachineBuilder {
 
-  private List<Instruction> instructions = Lists.newArrayList();
+  private List<Operator> operators = Lists.newArrayList();
   private ConstantRegisters constantRegisters = new ConstantRegisters();
   private int calculationRegisters = -1;
   private int outputRegisters = -1;
 
   public Machine build() {
     Preconditions.checkState(
-        instructions.size() > 0, "You need to provide at least one instruction");
+        operators.size() > 0, "You need to provide at least one operator");
     Preconditions.checkState(calculationRegisters >= 0,
         "You need to provide the number of calculation registers");
     Preconditions.checkState(outputRegisters >= 0,
@@ -22,14 +22,14 @@ public class MachineBuilder {
     Preconditions.checkState(outputRegisters <= calculationRegisters,
             "The number of output registers should be less or equal "
                 + "to the number of calculation registers");
-    Instruction[] instrArray = new Instruction[instructions.size()];
-    instrArray = instructions.toArray(instrArray);
-    return new Machine(instrArray, calculationRegisters, constantRegisters, outputRegisters);
+    Operator[] operatorArray = new Operator[operators.size()];
+    operatorArray = operators.toArray(operatorArray);
+    return new Machine(operatorArray, calculationRegisters, constantRegisters, outputRegisters);
   }
 
-  public MachineBuilder withInstruction(Instruction instruction) {
-    Preconditions.checkNotNull(instruction);
-    instructions.add(instruction);
+  public MachineBuilder withOperator(Operator operator) {
+    Preconditions.checkNotNull(operator);
+    operators.add(operator);
     return this;
   }
 

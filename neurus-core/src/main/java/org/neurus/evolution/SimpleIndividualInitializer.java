@@ -1,10 +1,10 @@
 package org.neurus.evolution;
 
-import org.neurus.instruction.BytecodeWriter;
-import org.neurus.instruction.InstructionData;
-import org.neurus.instruction.InstructionRandomizer;
-import org.neurus.instruction.Machine;
-import org.neurus.instruction.Program;
+import org.neurus.machine.BytecodeWriter;
+import org.neurus.machine.InstructionData;
+import org.neurus.machine.InstructionRandomizer;
+import org.neurus.machine.Machine;
+import org.neurus.machine.Program;
 import org.neurus.rng.RandomNumberGenerator;
 
 public class SimpleIndividualInitializer implements IndividualInitializer {

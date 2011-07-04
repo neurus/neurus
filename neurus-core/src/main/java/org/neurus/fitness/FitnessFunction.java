@@ -1,7 +1,7 @@
 package org.neurus.fitness;
 
 import org.neurus.evolution.Individual;
-import org.neurus.instruction.ProgramRunner;
+import org.neurus.machine.ProgramRunner;
 
 public interface FitnessFunction {
 
