@@ -13,8 +13,8 @@ public class RandomUtilsTest {
 
   private RandomNumberGenerator rng = mock(RandomNumberGenerator.class);
 
-  @Test
-  public void testRandomEnabledBitRetursMinusOneIfNoEnabledBit() {
+  @Test(expected = IllegalArgumentException.class)
+  public void testRandomEnabledBitThrowsExceptionIfNoEnabledBit() {
     BitSet bs = TestBitSetUtils.valueOf("00000000");
     assertEquals(-1, RandomUtils.randomEnabledBit(rng, bs));
   }
