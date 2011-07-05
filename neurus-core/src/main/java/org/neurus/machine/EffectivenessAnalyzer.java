@@ -3,30 +3,46 @@ package org.neurus.machine;
 import static org.neurus.util.Primitives.ubtoi;
 
 // TODO Pull some common functions that are repeated here and in InterpreterRunner
-public class CodeEffectiveness {
+public class EffectivenessAnalyzer {
 
   private final int bpi;
   private final Machine machine;
 
-  public CodeEffectiveness(Machine machine) {
+  public EffectivenessAnalyzer(Machine machine) {
     bpi = machine.getBytesPerInstruction();
     this.machine = machine;
   }
 
-  public boolean[] evaluate(Program program) {
+  public void analyzeProgram(Program program) {
+    // if we already studied a program effectiveness, we don't have to do it again
+    if (program.getEffectiveInstructions() != null) {
+      return;
+    }
+    boolean[] effectiveInstructions = newEffectiveInstructionsArray(program);
+    doEvaluation(program, -1, effectiveInstructions, newEffectiveRegistersArray());
+    program.setEffectiveInstructions(effectiveInstructions);
+  }
+
+  public boolean[] analyzeEffectiveRegistersAtInstruction(Program program, int instruction) {
+    boolean[] effectiveRegisters = newEffectiveRegistersArray();
+    doEvaluation(program, instruction, newEffectiveInstructionsArray(program), effectiveRegisters);
+    return effectiveRegisters;
+  }
+
+  private void doEvaluation(Program program, int stopAtLine, boolean[] effectiveInstructions,
+      boolean[] effectiveRegisters) {
+    
     byte[] bytecode = program.getBytecode();
     int programLength = bytecode.length / bpi;
-    boolean[] effectiveInstructions = new boolean[programLength];
 
     // at the beginning, only output registers are effective
-    boolean[] effectiveRegisters = new boolean[machine.getNumberOfCalculationRegisters()];
     for (int x = 0; x < machine.getNumberOfOutputRegisters(); x++) {
       effectiveRegisters[x] = true;
     }
 
     // start at the last instruction and go backwards
     int linePointer = programLength - 1;
-    while (linePointer >= 0) {
+    while (linePointer > stopAtLine) {
       // if this is already marked, it means its a branching instruction and we just need to mark
       // the input registers as effective
       if (effectiveInstructions[linePointer]) {
@@ -46,7 +62,16 @@ public class CodeEffectiveness {
       }
       linePointer--;
     }
-    return effectiveInstructions;
+  }
+
+  private boolean[] newEffectiveRegistersArray() {
+    return new boolean[machine.getNumberOfCalculationRegisters()];
+  }
+
+  private boolean[] newEffectiveInstructionsArray(Program program) {
+    byte[] bytecode = program.getBytecode();
+    int programLength = bytecode.length / bpi;
+    return new boolean[programLength];
   }
 
   private void markInputRegistersAsEffective(byte[] bytecode, int pointer,
