@@ -2,6 +2,8 @@ package org.neurus.machine;
 
 import static org.neurus.util.Primitives.ubtoi;
 
+import java.util.BitSet;
+
 // TODO Pull some common functions that are repeated here and in InterpreterRunner
 public class EffectivenessAnalyzer {
 
@@ -18,26 +20,26 @@ public class EffectivenessAnalyzer {
     if (program.getEffectiveInstructions() != null) {
       return;
     }
-    boolean[] effectiveInstructions = newEffectiveInstructionsArray(program);
+    BitSet effectiveInstructions = newEffectiveInstructionsBitSet(program);
     doEvaluation(program, -1, effectiveInstructions, newEffectiveRegistersArray());
     program.setEffectiveInstructions(effectiveInstructions);
   }
 
-  public boolean[] analyzeEffectiveRegistersAtInstruction(Program program, int instruction) {
-    boolean[] effectiveRegisters = newEffectiveRegistersArray();
-    doEvaluation(program, instruction, newEffectiveInstructionsArray(program), effectiveRegisters);
+  public BitSet analyzeEffectiveRegistersAtInstruction(Program program, int instruction) {
+    BitSet effectiveRegisters = newEffectiveRegistersArray();
+    doEvaluation(program, instruction, newEffectiveInstructionsBitSet(program), effectiveRegisters);
     return effectiveRegisters;
   }
 
-  private void doEvaluation(Program program, int stopAtLine, boolean[] effectiveInstructions,
-      boolean[] effectiveRegisters) {
+  private void doEvaluation(Program program, int stopAtLine, BitSet effectiveInstructions,
+      BitSet effectiveRegisters) {
     
     byte[] bytecode = program.getBytecode();
     int programLength = bytecode.length / bpi;
 
     // at the beginning, only output registers are effective
     for (int x = 0; x < machine.getNumberOfOutputRegisters(); x++) {
-      effectiveRegisters[x] = true;
+      effectiveRegisters.set(x);
     }
 
     // start at the last instruction and go backwards
@@ -45,7 +47,7 @@ public class EffectivenessAnalyzer {
     while (linePointer > stopAtLine) {
       // if this is already marked, it means its a branching instruction and we just need to mark
       // the input registers as effective
-      if (effectiveInstructions[linePointer]) {
+      if (effectiveInstructions.get(linePointer)) {
         markInputRegistersAsEffective(bytecode, linePointer, effectiveRegisters);
         linePointer--;
         continue;
@@ -53,10 +55,10 @@ public class EffectivenessAnalyzer {
       // find instruction with destination register in Reff
       int destinationRegister = currentDestinationRegister(linePointer, bytecode);
       if (isEffectiveRegister(destinationRegister, effectiveRegisters)) {
-        effectiveInstructions[linePointer] = true;
+        effectiveInstructions.set(linePointer);
         int marked = markPreviousBranchingInstructions(bytecode, linePointer, effectiveInstructions);
         if (marked == 0) {
-          effectiveRegisters[destinationRegister] = false;
+          effectiveRegisters.clear(destinationRegister);
         }
         markInputRegistersAsEffective(bytecode, linePointer, effectiveRegisters);
       }
@@ -64,37 +66,37 @@ public class EffectivenessAnalyzer {
     }
   }
 
-  private boolean[] newEffectiveRegistersArray() {
-    return new boolean[machine.getNumberOfCalculationRegisters()];
+  private BitSet newEffectiveRegistersArray() {
+    return new BitSet(machine.getNumberOfCalculationRegisters());
   }
 
-  private boolean[] newEffectiveInstructionsArray(Program program) {
+  private BitSet newEffectiveInstructionsBitSet(Program program) {
     byte[] bytecode = program.getBytecode();
     int programLength = bytecode.length / bpi;
-    return new boolean[programLength];
+    return new BitSet(programLength);
   }
 
   private void markInputRegistersAsEffective(byte[] bytecode, int pointer,
-      boolean[] effectiveRegisters) {
+      BitSet effectiveRegisters) {
     int address = address(pointer);
     Operator operator = operatorAtPointer(pointer, bytecode);
     for (int i = 0; i < operator.getInputRegisters(); i++) {
       int regIndex = ubtoi(bytecode[address + i + 1]);
       if (regIndex < machine.getNumberOfCalculationRegisters()) {
-        effectiveRegisters[regIndex] = true;
+        effectiveRegisters.set(regIndex);
       }
     }
   }
 
   private int markPreviousBranchingInstructions(byte[] bytecode, int pointer,
-      boolean[] effectiveInstructions) {
+      BitSet effectiveInstructions) {
     int marked = 0;
     while (true) {
       pointer--;
       if (pointer < 0 || !operatorAtPointer(pointer, bytecode).isBranching()) {
         break;
       }
-      effectiveInstructions[pointer] = true;
+      effectiveInstructions.set(pointer);
       marked++;
     }
     return marked;
@@ -109,11 +111,11 @@ public class EffectivenessAnalyzer {
     return ubtoi(bytecode[destRegAddress]);
   }
 
-  private boolean isEffectiveRegister(int destinationRegister, boolean[] effectiveRegisters) {
+  private boolean isEffectiveRegister(int destinationRegister, BitSet effectiveRegisters) {
     if (destinationRegister == -1) {
       return false;
     }
-    return effectiveRegisters[destinationRegister];
+    return effectiveRegisters.get(destinationRegister);
   }
 
   private Operator operatorAtPointer(int pointer, byte[] bytecode) {

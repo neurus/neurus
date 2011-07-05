@@ -1,7 +1,7 @@
 package org.neurus.machine;
 
 import static junit.framework.Assert.assertSame;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.neurus.machine.LogicOperators.ifEquals;
 import static org.neurus.machine.LogicOperators.ifGreaterThan;
 import static org.neurus.machine.LogicOperators.ifLessThan;
@@ -11,10 +11,11 @@ import static org.neurus.machine.MathOperators.multiplication;
 import static org.neurus.machine.MathOperators.substraction;
 import static org.neurus.machine.TrigonometricOperators.sin;
 
-import java.util.Arrays;
+import java.util.BitSet;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.neurus.util.TestBitSetUtils;
 
 public class EffectivenessAnalyzerTest {
 
@@ -62,17 +63,15 @@ public class EffectivenessAnalyzerTest {
   @Test
   public void testAnalyzeProgram() {
     analyzer.analyzeProgram(program);
-    boolean[] expected = new boolean[] {
-        true, false, true, true, true, false, true,
-        true, false, false, true, false, true, true };
-    assertTrue(Arrays.equals(expected, program.getEffectiveInstructions()));
+    BitSet expected = TestBitSetUtils.valueOf("10111011001011");
+    assertEquals(expected, program.getEffectiveInstructions());
   }
 
   @Test
   public void testSecondAnalysisIsANoOp() {
     analyzer.analyzeProgram(program);
     // if we pass the same program again, it should not be evaluated, this should be a no op
-    boolean[] previousEffectiveness = program.getEffectiveInstructions();
+    BitSet previousEffectiveness = program.getEffectiveInstructions();
     analyzer.analyzeProgram(program);
     assertSame(previousEffectiveness, program.getEffectiveInstructions());
   }
@@ -80,29 +79,23 @@ public class EffectivenessAnalyzerTest {
   @Test
   public void testAnalyzeEffectiveRegistersAtInstruction() {
     // at the last instruction, only the output, r0 should be effective
-    boolean[] effectiveRegisters = analyzer.analyzeEffectiveRegistersAtInstruction(program, 13);
-    assertTrue(Arrays.equals(new boolean[] {
-        true, false, false, false, false,
-        false, false, false, false, false }, effectiveRegisters));
+    BitSet expected = TestBitSetUtils.valueOf("1000000000");
+    BitSet effectiveRegisters = analyzer.analyzeEffectiveRegistersAtInstruction(program, 13);
+    assertEquals(expected, effectiveRegisters);
+
     // at the previous, r0 and r7 should be effective
     effectiveRegisters = analyzer.analyzeEffectiveRegistersAtInstruction(program, 12);
-    assertTrue(Arrays.equals(new boolean[] {
-        true, false, false, false, false,
-        false, false, true, false, false }, effectiveRegisters));
+    expected = TestBitSetUtils.valueOf("1000000100");
+    assertEquals(expected, effectiveRegisters);
+
     // previous, r0, r1, r6 and r7 should be effective
     effectiveRegisters = analyzer.analyzeEffectiveRegistersAtInstruction(program, 11);
-    assertTrue(Arrays.equals(new boolean[] {
-        true, true, false, false, false,
-        false, true, true, false, false }, effectiveRegisters));
-    // previous, r0, r1, r6 and r7 should be effective
-    effectiveRegisters = analyzer.analyzeEffectiveRegistersAtInstruction(program, 11);
-    assertTrue(Arrays.equals(new boolean[] {
-        true, true, false, false, false,
-        false, true, true, false, false }, effectiveRegisters));
+    expected = TestBitSetUtils.valueOf("1100001100");
+    assertEquals(expected, effectiveRegisters);
+
     // previous, should stay the same
     effectiveRegisters = analyzer.analyzeEffectiveRegistersAtInstruction(program, 10);
-    assertTrue(Arrays.equals(new boolean[] {
-        true, true, false, false, false,
-        false, true, true, false, false }, effectiveRegisters));
+    expected = TestBitSetUtils.valueOf("1100001100");
+    assertEquals(expected, effectiveRegisters);
   }
 }
