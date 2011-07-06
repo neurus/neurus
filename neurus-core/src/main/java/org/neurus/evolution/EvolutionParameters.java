@@ -11,6 +11,9 @@ public class EvolutionParameters {
   private static final double DEFAULT_CONSTANT_PROBABILITY = 0.5d;
   private static final double DEFAULT_INSERTION_PROBABILITY = 0.5d;
   private static final int DEFAULT_TOURNAMENT_SIZE = 2;
+  private static final double DEFAULT_REGISTER_MUTATION_PROBABILITY = 0.33d;
+  private static final double DEFAULT_OPERATOR_MUTATION_PROBABILITY = 0.33d;
+  private static final double DEFAULT_CONSTANT_MUTATION_PROBABILITY = 0.33d;
 
   private int populationSize = DEFAULT_POPULATION_SIZE;
   private int minInitializationProgramSize = DEFAULT_MIN_INITIALIZATION_PROGRAM_SIZE;
@@ -21,6 +24,9 @@ public class EvolutionParameters {
   private double insertionProbability = DEFAULT_INSERTION_PROBABILITY;
   private double constantProbability = DEFAULT_CONSTANT_PROBABILITY;
   private int tournamentSize = DEFAULT_TOURNAMENT_SIZE;
+  private double registerMutationProbability = DEFAULT_REGISTER_MUTATION_PROBABILITY;
+  private double operatorMutationProbability = DEFAULT_OPERATOR_MUTATION_PROBABILITY;
+  private double constantMutationProbability = DEFAULT_CONSTANT_MUTATION_PROBABILITY;
 
   public int getPopulationSize() {
     return populationSize;
@@ -92,5 +98,29 @@ public class EvolutionParameters {
 
   public void setInsertionProbability(double insertionProbability) {
     this.insertionProbability = insertionProbability;
+  }
+
+  public double getRegisterMutationProbability() {
+    return registerMutationProbability;
+  }
+
+  public void setRegisterMutationProbability(double registerMutationProbability) {
+    this.registerMutationProbability = registerMutationProbability;
+  }
+
+  public double getOperatorMutationProbability() {
+    return operatorMutationProbability;
+  }
+
+  public void setOperatorMutationProbability(double operatorMutationProbability) {
+    this.operatorMutationProbability = operatorMutationProbability;
+  }
+
+  public double getConstantMutationProbability() {
+    return constantMutationProbability;
+  }
+
+  public void setConstantMutationProbability(double constantMutationProbability) {
+    this.constantMutationProbability = constantMutationProbability;
   }
 }

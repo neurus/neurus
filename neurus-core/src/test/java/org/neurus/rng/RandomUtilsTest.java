@@ -22,6 +22,8 @@ public class RandomUtilsTest {
   @Test
   public void testRandomEnabledBitRetursCorrectIndex() {
     BitSet bs = TestBitSetUtils.valueOf("10000010");
+    when(rng.nextInt(2)).thenReturn(0);
+    assertEquals(0, RandomUtils.randomEnabledBit(rng, bs));
     when(rng.nextInt(2)).thenReturn(1);
     assertEquals(6, RandomUtils.randomEnabledBit(rng, bs));
   }

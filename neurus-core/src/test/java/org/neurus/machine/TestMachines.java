@@ -9,7 +9,7 @@ public class TestMachines {
 
   public static Machine calculator() {
     return new MachineBuilder()
-        .withCalculationRegisters(10)
+        .withCalculationRegisters(5)
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))
         .withOperator(MathOperators.addition())
         .withOperator(MathOperators.substraction())

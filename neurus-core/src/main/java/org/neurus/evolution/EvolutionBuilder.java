@@ -1,10 +1,11 @@
 package org.neurus.evolution;
 
-import org.neurus.breeder.Breeder;
 import org.neurus.breeder.CompositeBreeder;
+import org.neurus.breeder.EffectiveMicroMutation;
 import org.neurus.breeder.MacroMutation;
 import org.neurus.fitness.FitnessFunction;
 import org.neurus.machine.BytecodeWriter;
+import org.neurus.machine.EffectivenessAnalyzer;
 import org.neurus.machine.InstructionRandomizer;
 import org.neurus.machine.Machine;
 import org.neurus.rng.DefaultRandomNumberGenerator;
@@ -14,7 +15,7 @@ public class EvolutionBuilder {
 
   private EvolutionParameters params = new EvolutionParameters();
   private Machine machine;
-  private FitnessFunction fitnessFunction;  
+  private FitnessFunction fitnessFunction;
 
   public EvolutionBuilder withFitnessFunction(FitnessFunction fitnessFunction) {
     this.fitnessFunction = fitnessFunction;
@@ -48,9 +49,16 @@ public class EvolutionBuilder {
     MacroMutation macroMutation = new MacroMutation(machine, rng, params.getInsertionProbability(),
         params.getMinProgramSize(), params.getMaxProgramSize(), bytecodeWriter,
         instructionRandomizer);
+    EffectivenessAnalyzer effectivenessAnalyzer = new EffectivenessAnalyzer(machine);
+    EffectiveMicroMutation effMicroMutation = new EffectiveMicroMutation(machine,
+        instructionRandomizer, rng, effectivenessAnalyzer, params.getRegisterMutationProbability(),
+        params.getOperatorMutationProbability(), params.getConstantMutationProbability());
+    CompositeBreeder compositeBreeder = new CompositeBreeder.Builder(rng)
+        .withBreeder(macroMutation, 1.0)
+        .withBreeder(effMicroMutation, 1.0)
+        .build();
     EvolutionListener evolutionListener = new LoggingEvolutionListener();
-    Breeder breeder = new CompositeBreeder.Builder(rng).withBreeder(macroMutation, 1).build();
     return new SteadyStateEvolution(machine, populationFactory, rng, fitnessFunction, termination,
-        params, selector, deselector, breeder, evolutionListener);
+        params, selector, deselector, compositeBreeder, evolutionListener);
   }
 }

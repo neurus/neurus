@@ -10,7 +10,7 @@ public class RandomUtils {
       throw new IllegalArgumentException("No enabled bits in bitset: " + bitSet);
     }
     int randomBit = rng.nextInt(cardinality);
-    int currBit = 1;
+    int currBit = 0;
     for (int x = 0; x < randomBit; x++) {
       currBit = bitSet.nextSetBit(currBit + 1);
     }

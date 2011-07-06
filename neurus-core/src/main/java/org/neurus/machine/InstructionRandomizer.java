@@ -20,41 +20,41 @@ public class InstructionRandomizer {
   }
 
   public void fillRandomInstruction(InstructionData instructionData) {
-    instructionData.operatorIndex = randomOperatorIndex();
+    instructionData.operatorIndex = randomOperator();
     if (instructionData.inputRegisters.length > 0) {
       // there should be at least 1 calculation register
-      instructionData.inputRegisters[0] = randomCalculationIndex();
+      instructionData.inputRegisters[0] = randomCalculationRegister();
       // the rest can be either calculation register or const depending on pConst
       for (int j = 1; j < instructionData.inputRegisters.length; j++) {
-        if (useConstant()) {
-          instructionData.inputRegisters[j] = randomConstantIndex();
-        } else {
-          instructionData.inputRegisters[j] = randomCalculationIndex();
-        }
+        instructionData.inputRegisters[j] = randomRegister();
       }
     }
     if (machine.hasDestinationRegister()) {
-      instructionData.destinationRegister = randomCalculationIndex();
+      instructionData.destinationRegister = randomCalculationRegister();
     }
   }
 
-  private byte randomOperatorIndex() {
-    int operatorIndex = rng.nextInt(machine.size());
-    return (byte) operatorIndex;
-  }
-
-  private byte randomCalculationIndex() {
+  public int randomCalculationRegister() {
     int calcIndex = rng.nextInt(machine.getNumberOfCalculationRegisters());
-    return (byte) calcIndex;
+    return calcIndex;
   }
 
-  private byte randomConstantIndex() {
+  public int randomRegister() {
+    if (rng.nextDouble() < pConst) {
+      return randomConstantIndex();
+    } else {
+      return randomCalculationRegister();
+    }
+  }
+
+  public int randomOperator() {
+    int operatorIndex = rng.nextInt(machine.size());
+    return operatorIndex;
+  }
+
+  private int randomConstantIndex() {
     int constIndex = rng.nextInt(machine.getNumberOfConstantRegisters());
     int constRegIndex = constIndex + machine.getNumberOfCalculationRegisters();
-    return (byte) constRegIndex;
-  }
-
-  private boolean useConstant() {
-    return rng.nextDouble() < pConst;
+    return constRegIndex;
   }
 }
