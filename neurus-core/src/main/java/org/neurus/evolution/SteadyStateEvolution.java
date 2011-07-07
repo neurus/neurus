@@ -14,7 +14,7 @@ public class SteadyStateEvolution extends EvolutionBase {
 
   public SteadyStateEvolution(Machine machine, PopulationFactory populationFactory,
       RandomNumberGenerator rng, FitnessFunction fitnessFunction,
-      TerminationStrategy terminationStrategy, EvolutionParameters params,
+      TerminationCriteria terminationStrategy, EvolutionParameters params,
       SelectionMethod selector, SelectionMethod deselector, Breeder breeder,
       EvolutionListener evolutionListener) {
     super(machine, populationFactory, rng, fitnessFunction, terminationStrategy, params,

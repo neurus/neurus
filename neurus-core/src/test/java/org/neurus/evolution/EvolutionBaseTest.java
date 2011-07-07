@@ -20,7 +20,7 @@ public class EvolutionBaseTest {
 
   private static final int POP_SIZE = 5;
   private TestEvolutionBaseImplementor evolution;
-  private TerminationStrategy terminationStrategy;
+  private TerminationCriteria terminationCriteria;
   private PopulationFactory populationFactory;
   private Population population;
   private TestEvolutionListener evolutionListener;
@@ -31,14 +31,14 @@ public class EvolutionBaseTest {
     EvolutionParameters params = new EvolutionParameters();
     params.setPopulationSize(POP_SIZE);
     population = TestPopulations.populationOfSize(POP_SIZE);
-    terminationStrategy = mock(TerminationStrategy.class);
+    terminationCriteria = mock(TerminationCriteria.class);
     FitnessFunction fitnessFunction = TestFitnessFunctions.constantFitnessFunction(10d);
     RandomNumberGenerator rng = new DefaultRandomNumberGenerator(1L);
     populationFactory = mock(PopulationFactory.class);
     when(populationFactory.initialize(POP_SIZE)).thenReturn(population);
     evolutionListener = new TestEvolutionListener();
     evolution = new TestEvolutionBaseImplementor(machine, populationFactory, rng,
-        fitnessFunction, terminationStrategy, params, evolutionListener);
+        fitnessFunction, terminationCriteria, params, evolutionListener);
   }
 
   @Test
@@ -73,7 +73,7 @@ public class EvolutionBaseTest {
   }
 
   private void stopRightAfterGeneration(int genNumber) {
-    OngoingStubbing<Boolean> stub = when(terminationStrategy.terminate(any(EvolutionState.class)));
+    OngoingStubbing<Boolean> stub = when(terminationCriteria.shouldTerminate(any(EvolutionState.class)));
     for (int x = 0; x < genNumber; x++) {
       stub = stub.thenReturn(false);
     }
@@ -94,7 +94,7 @@ class TestEvolutionBaseImplementor extends EvolutionBase {
 
   public TestEvolutionBaseImplementor(Machine machine, PopulationFactory populationFactory,
       RandomNumberGenerator rng, FitnessFunction fitnessFunction,
-      TerminationStrategy terminationStrategy, EvolutionParameters params,
+      TerminationCriteria terminationStrategy, EvolutionParameters params,
       EvolutionListener evolutionListener) {
     super(machine, populationFactory, rng, fitnessFunction, terminationStrategy, params,
         evolutionListener);

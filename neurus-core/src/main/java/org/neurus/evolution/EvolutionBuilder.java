@@ -41,7 +41,8 @@ public class EvolutionBuilder {
         bytecodeWriter, instructionRandomizer, params.getMinInitializationProgramSize(),
         params.getMaxInitializationProgramSize());
     PopulationFactory populationFactory = new PopulationFactory(individualInitializer);
-    TerminationStrategy termination = new DefaultTerminationStrategy();
+    TerminationCriteria termination = new DefaultTerminationCriteria(
+        params.getMaxNumberOfGenerations(), params.getFitnessThreshold());
     TournamentSelection selector = new TournamentSelection(rng,
         params.getTournamentSize());
     TournamentSelection deselector = new TournamentSelection(rng,

@@ -11,7 +11,7 @@ public abstract class EvolutionBase implements Evolution {
   protected final Machine machine;
   protected final PopulationFactory populationFactory;
   protected final RandomNumberGenerator rng;
-  protected final TerminationStrategy terminationStrategy;
+  protected final TerminationCriteria terminationCriteria;
   protected final FitnessFunction fitnessFunction;
   protected final EvolutionParameters params;
   protected final ProgramRunner programRunner;
@@ -21,13 +21,13 @@ public abstract class EvolutionBase implements Evolution {
 
   public EvolutionBase(Machine machine, PopulationFactory populationFactory,
       RandomNumberGenerator rng, FitnessFunction fitnessFunction,
-      TerminationStrategy terminationStrategy, EvolutionParameters params,
+      TerminationCriteria terminationCriteria, EvolutionParameters params,
       EvolutionListener evolutionListener) {
     super();
     this.machine = machine;
     this.populationFactory = populationFactory;
     this.rng = rng;
-    this.terminationStrategy = terminationStrategy;
+    this.terminationCriteria = terminationCriteria;
     this.fitnessFunction = fitnessFunction;
     this.params = params;
     this.programRunner = machine.createRunner();
@@ -37,7 +37,7 @@ public abstract class EvolutionBase implements Evolution {
   public void evolve() {
     createInitialGeneration();
     evolutionListener.onNewGeneration(evolutionState);
-    while (!terminationStrategy.terminate(evolutionState)) {
+    while (!terminationCriteria.shouldTerminate(evolutionState)) {
       Population newPopulation = evolveOneGeneration();
       evolutionState.nextGeneration(newPopulation);
       evolutionListener.onNewGeneration(evolutionState);

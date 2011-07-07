@@ -14,6 +14,8 @@ public class EvolutionParameters {
   private static final double DEFAULT_REGISTER_MUTATION_PROBABILITY = 0.33d;
   private static final double DEFAULT_OPERATOR_MUTATION_PROBABILITY = 0.33d;
   private static final double DEFAULT_CONSTANT_MUTATION_PROBABILITY = 0.33d;
+  private static final int DEFAULT_MAX_NUMBER_OF_GENERATIONS = 500;
+  private static final double DEFAULT_FITNESS_THRESHOLD = 0;
 
   private int populationSize = DEFAULT_POPULATION_SIZE;
   private int minInitializationProgramSize = DEFAULT_MIN_INITIALIZATION_PROGRAM_SIZE;
@@ -27,6 +29,8 @@ public class EvolutionParameters {
   private double registerMutationProbability = DEFAULT_REGISTER_MUTATION_PROBABILITY;
   private double operatorMutationProbability = DEFAULT_OPERATOR_MUTATION_PROBABILITY;
   private double constantMutationProbability = DEFAULT_CONSTANT_MUTATION_PROBABILITY;
+  private int maxNumberOfGenerations = DEFAULT_MAX_NUMBER_OF_GENERATIONS;
+  private double fitnessThreshold = DEFAULT_FITNESS_THRESHOLD;
 
   public int getPopulationSize() {
     return populationSize;
@@ -122,5 +126,21 @@ public class EvolutionParameters {
 
   public void setConstantMutationProbability(double constantMutationProbability) {
     this.constantMutationProbability = constantMutationProbability;
+  }
+
+  public int getMaxNumberOfGenerations() {
+    return maxNumberOfGenerations;
+  }
+
+  public void setMaxNumberOfGenerations(int maxNumberOfGenerations) {
+    this.maxNumberOfGenerations = maxNumberOfGenerations;
+  }
+
+  public double getFitnessThreshold() {
+    return fitnessThreshold;
+  }
+
+  public void setFitnessThreshold(double fitnessThreshold) {
+    this.fitnessThreshold = fitnessThreshold;
   }
 }
