@@ -3,12 +3,12 @@ package org.neurus.data;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
+import static org.neurus.data.Attribute.MISSING_VALUE;
 import static org.neurus.testing.MoreAsserts.assertStringContains;
 
 import java.util.Arrays;
 
 import org.junit.Test;
-import org.neurus.testing.MoreAsserts;
 
 public class NominalAttributeTest {
 
@@ -33,6 +33,8 @@ public class NominalAttributeTest {
     assertEquals(0d, nominalAttribute.valueOf("label1"));
     assertEquals(1d, nominalAttribute.valueOf("label2"));
     assertEquals(2d, nominalAttribute.valueOf("label3"));
+    assertEquals(MISSING_VALUE, nominalAttribute.valueOf(""));
+    assertEquals(MISSING_VALUE, nominalAttribute.valueOf("?"));
   }
 
   @Test
@@ -55,6 +57,7 @@ public class NominalAttributeTest {
     assertEquals("label1", nominalAttribute.labelFor(0));
     assertEquals("label2", nominalAttribute.labelFor(1));
     assertEquals("label3", nominalAttribute.labelFor(2));
+    assertEquals("?", nominalAttribute.labelFor(MISSING_VALUE));
   }
 
   @Test
@@ -66,6 +69,25 @@ public class NominalAttributeTest {
     } catch (IllegalArgumentException ex) {
       assertStringContains("Repeated label", ex.getMessage());
       assertStringContains("repeatedLabel", ex.getMessage());
+    }
+  }
+
+  @Test
+  public void testConstructionFailsWhenLabelsMeanMissing() {
+    String[] labels = new String[] { "label1", "?", "label2" };
+    try {
+      new NominalAttribute("someName", labels);
+      fail();
+    } catch (IllegalArgumentException ex) {
+      assertStringContains("reserved to indicate missing", ex.getMessage());
+    }
+
+    String[] labels2 = new String[] { "label1", "", "label2" };
+    try {
+      new NominalAttribute("someName", labels2);
+      fail();
+    } catch (IllegalArgumentException ex) {
+      assertStringContains("reserved to indicate missing", ex.getMessage());
     }
   }
 }

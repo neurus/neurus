@@ -16,11 +16,14 @@ public class NumericAttributeTest {
   public void testValueOf() {
     NumericAttribute att = new NumericAttribute("someName");
     assertEquals(3.45d, att.valueOf("3.45"));
+    assertEquals(Double.NaN, att.valueOf(""));
+    assertEquals(Double.NaN, att.valueOf("?"));
   }
 
   @Test
   public void testLabelFor() {
     NumericAttribute att = new NumericAttribute("someName");
     assertEquals("3.45", att.labelFor(3.45d));
+    assertEquals("?", att.labelFor(Double.NaN));
   }
 }
