@@ -12,17 +12,29 @@ import com.google.common.base.Throwables;
 
 public class CsvLoader {
 
-  // TODO document that we close the reader
-  public static Dataset load(Reader reader, Schema schema) {
-    Preconditions.checkNotNull(reader, "Reader cannot be null");
+  private boolean validateHeadersIfPresent = true;
+  private Schema schema;
+
+  public CsvLoader(Schema schema) {
     Preconditions.checkNotNull(schema, "Schema cannot be null");
+    this.schema = schema;
+  }
+
+  // TODO document that we close the reader
+  public Dataset load(Reader reader, boolean fileHasHeaders) {
+    Preconditions.checkNotNull(reader, "Reader cannot be null");
     CSVReader csvReader = null;
     try {
       csvReader = new CSVReader(reader);
+      String[] line;
 
       // read headers and check that they match the defined schema
-      String[] line = csvReader.readNext();
-      checkHeaders(schema, line);
+      if (fileHasHeaders) {
+        line = csvReader.readNext();
+        if (validateHeadersIfPresent) {
+          checkHeaders(schema, line);
+        }
+      }
 
       // now load each data intances
       Dataset dataset = new Dataset(schema);
@@ -40,7 +52,11 @@ public class CsvLoader {
     }
   }
 
-  private static Instance createInstance(Schema schema, String[] line, int lineCounter) {
+  public void setValidateHeadersIfPresent(boolean validateHeadersIfPresent) {
+    this.validateHeadersIfPresent = validateHeadersIfPresent;
+  }
+
+  private Instance createInstance(Schema schema, String[] line, int lineCounter) {
     int attributeCount = schema.getAttributeCount();
     if (line.length != attributeCount) {
       throw new RuntimeException("Incorrect number of attributes in data file for line "
@@ -53,7 +69,7 @@ public class CsvLoader {
     return new Instance(values);
   }
 
-  private static void checkHeaders(Schema schema, String[] line) {
+  private void checkHeaders(Schema schema, String[] line) {
     if (line == null) {
       throw new RuntimeException("No header line present in the file. File is empty?");
     }

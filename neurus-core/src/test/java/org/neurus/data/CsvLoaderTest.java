@@ -22,7 +22,8 @@ public class CsvLoaderTest {
   @Test
   public void testSuccessfulLoad() {
     String csvFile = Joiner.on('\n').join("age,gender", "9,M", "12,F");
-    Dataset ds = CsvLoader.load(new StringReader(csvFile), ageAndGenderSchema);
+    CsvLoader csvLoader = new CsvLoader(ageAndGenderSchema);
+    Dataset ds = csvLoader.load(new StringReader(csvFile), true);
     Assert.assertSame(ageAndGenderSchema, ds.getSchema());
     assertEquals(2, ds.getInstances().size());
 
@@ -36,10 +37,28 @@ public class CsvLoaderTest {
   }
 
   @Test
+  public void testSuccessfulLoadWithNoHeaders() {
+    String csvFile = Joiner.on('\n').join("9,M", "12,F");
+    CsvLoader csvLoader = new CsvLoader(ageAndGenderSchema);
+    Dataset ds = csvLoader.load(new StringReader(csvFile), false);
+    assertEquals(2, ds.getInstances().size());
+  }
+
+  @Test
+  public void testAvoidHeaderValidation() {
+    String csvFile = Joiner.on('\n').join("wrongHeader1,wrongHeader2", "9,M", "12,F");
+    CsvLoader csvLoader = new CsvLoader(ageAndGenderSchema);
+    csvLoader.setValidateHeadersIfPresent(false);
+    Dataset ds = csvLoader.load(new StringReader(csvFile), true);
+    assertEquals(2, ds.getInstances().size());
+  }
+
+  @Test
   public void testCsvLoaderComplainsAboutEmptyFile() {
     String csvFile = "";
     try {
-      CsvLoader.load(new StringReader(csvFile), ageAndGenderSchema);
+      CsvLoader csvLoader = new CsvLoader(ageAndGenderSchema);
+      csvLoader.load(new StringReader(csvFile), true);
       fail();
     } catch (RuntimeException ex) {
       assertStringContains("File is empty?", ex.getMessage());
@@ -50,7 +69,8 @@ public class CsvLoaderTest {
   public void testCsvLoaderValidatesNumberOfAttributes() {
     String csvFile = Joiner.on('\n').join("age", "9,M");
     try {
-      CsvLoader.load(new StringReader(csvFile), ageAndGenderSchema);
+      CsvLoader csvLoader = new CsvLoader(ageAndGenderSchema);
+      csvLoader.load(new StringReader(csvFile), true);
       fail();
     } catch (RuntimeException ex) {
       assertStringContains("headers expected", ex.getMessage());
@@ -61,7 +81,8 @@ public class CsvLoaderTest {
   public void testCsvLoaderValidatesAttributeNames() {
     String csvFile = Joiner.on('\n').join("age,wrongheader", "9,M");
     try {
-      CsvLoader.load(new StringReader(csvFile), ageAndGenderSchema);
+      CsvLoader csvLoader = new CsvLoader(ageAndGenderSchema);
+      csvLoader.load(new StringReader(csvFile), true);
       fail();
     } catch (RuntimeException ex) {
       assertStringContains("Schema attributes do not match", ex.getMessage());
@@ -73,7 +94,8 @@ public class CsvLoaderTest {
   public void testInvalidAttributeCountForData() {
     String csvFile = Joiner.on('\n').join("age,gender", "9,M,idontbelonghere");
     try {
-      CsvLoader.load(new StringReader(csvFile), ageAndGenderSchema);
+      CsvLoader csvLoader = new CsvLoader(ageAndGenderSchema);
+      csvLoader.load(new StringReader(csvFile), true);
       fail();
     } catch (Exception ex) {
       assertStringContains("Incorrect number of attributes", ex.getMessage());
