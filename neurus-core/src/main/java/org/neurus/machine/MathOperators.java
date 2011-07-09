@@ -22,7 +22,6 @@ public class MathOperators {
     };
   }
 
-
   public static Operator multiplication() {
     return new BaseOperator(2, true) {
 
@@ -32,7 +31,6 @@ public class MathOperators {
       }
     };
   }
-
 
   public static Operator division() {
     return new BaseOperator(2, true) {
@@ -44,8 +42,18 @@ public class MathOperators {
     };
   }
 
+  public static Operator pow() {
+    return new BaseOperator(2, true) {
+
+      @Override
+      public double execute(double[] inputs) {
+        return protectedResult(Math.pow(inputs[0], inputs[1]));
+      }
+    };
+  }
+
   public static double protectedResult(double result) {
-    if(Double.isInfinite(result) || Double.isNaN(result)) {
+    if (Double.isInfinite(result) || Double.isNaN(result)) {
       return 0;
     }
     return result;

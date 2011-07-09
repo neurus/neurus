@@ -4,6 +4,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.neurus.machine.MathOperators.addition;
 import static org.neurus.machine.MathOperators.division;
 import static org.neurus.machine.MathOperators.multiplication;
+import static org.neurus.machine.MathOperators.pow;
 import static org.neurus.machine.MathOperators.substraction;
 
 import org.junit.Test;
@@ -48,5 +49,17 @@ public class MathOperatorsTest {
     assertEquals(0d, multiplication().execute(inputs));
     double[] inputs2 = new double[] { 4, Double.POSITIVE_INFINITY };
     assertEquals(0d, multiplication().execute(inputs2));
+  }
+
+  @Test
+  public void testPow() {
+    double[] inputs = new double[] { 2, 0.3 };
+    assertEquals(1.231144413d, pow().execute(inputs), 0.0000001);
+  }
+
+  @Test
+  public void testProtectedPow() {
+    double[] inputs = new double[] { 0, -1 };
+    assertEquals(0d, pow().execute(inputs), 0.0000001);
   }
 }

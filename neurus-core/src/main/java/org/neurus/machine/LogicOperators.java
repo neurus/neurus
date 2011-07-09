@@ -22,12 +22,32 @@ public class LogicOperators {
     };
   }
 
+  public static Operator ifGreaterThanOrEquals() {
+    return new BranchingOperator(2) {
+
+      @Override
+      public double execute(double[] inputs) {
+        return inputs[0] >= inputs[1] ? TRUE : FALSE;
+      }
+    };
+  }
+
   public static Operator ifLessThan() {
     return new BranchingOperator(2) {
 
       @Override
       public double execute(double[] inputs) {
         return inputs[0] < inputs[1] ? TRUE : FALSE;
+      }
+    };
+  }
+
+  public static Operator ifLessThanOrEquals() {
+    return new BranchingOperator(2) {
+
+      @Override
+      public double execute(double[] inputs) {
+        return inputs[0] <= inputs[1] ? TRUE : FALSE;
       }
     };
   }
