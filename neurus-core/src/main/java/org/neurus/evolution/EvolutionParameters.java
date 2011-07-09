@@ -2,7 +2,7 @@ package org.neurus.evolution;
 
 public class EvolutionParameters {
 
-  private static final int DEFAULT_POPULATION_SIZE = 50;
+  private static final int DEFAULT_POPULATION_SIZE = 500;
   private static final int DEFAULT_MIN_INITIALIZATION_PROGRAM_SIZE = 2;
   private static final int DEFAULT_MAX_INITIALIZATION_PROGRAM_SIZE = 10;
   private static final int DEFAULT_MIN_PROGRAM_SIZE = 1;

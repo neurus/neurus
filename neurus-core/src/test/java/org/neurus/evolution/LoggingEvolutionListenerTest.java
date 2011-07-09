@@ -3,7 +3,7 @@ package org.neurus.evolution;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.neurus.testing.MoreAsserts.assertStringPresent;
+import static org.neurus.testing.MoreAsserts.assertStringContains;
 
 import java.util.logging.Logger;
 
@@ -37,8 +37,8 @@ public class LoggingEvolutionListenerTest {
     when(evolutionState.getGeneration()).thenReturn(45);
     listener.onNewGeneration(evolutionState);
     verify(logger).info(loggingCaptor.capture());
-    assertStringPresent("Generation: 45", loggingCaptor.getValue());
-    assertStringPresent("Average fitness: 0.833333", loggingCaptor.getValue());
-    assertStringPresent("Best: 0.250000", loggingCaptor.getValue());
+    assertStringContains("Generation: 45", loggingCaptor.getValue());
+    assertStringContains("Average fitness: 0.833333", loggingCaptor.getValue());
+    assertStringContains("Best: 0.250000", loggingCaptor.getValue());
   }
 }

@@ -2,6 +2,7 @@ package org.neurus.samples.symbolicregression;
 
 import org.neurus.evolution.Evolution;
 import org.neurus.evolution.EvolutionBuilder;
+import org.neurus.evolution.EvolutionParameters;
 import org.neurus.evolution.Individual;
 import org.neurus.fitness.Fitness;
 import org.neurus.fitness.FitnessFunction;
@@ -24,8 +25,13 @@ public class PolynomialExample {
         .withOperator(MathOperators.division())
         .withOutputRegisters(1)
         .build();
-    Evolution evolution = new EvolutionBuilder().withMachine(machine)
-        .withFitnessFunction(new MseFitnessFunction(values)).build();
+    EvolutionParameters params = new EvolutionParameters();
+    params.setFitnessThreshold(0.000001);
+    Evolution evolution = new EvolutionBuilder()
+        .withMachine(machine)
+        .withEvolutionParameters(params)
+        .withFitnessFunction(new MseFitnessFunction(values))
+        .build();
     evolution.evolve();
   }
 

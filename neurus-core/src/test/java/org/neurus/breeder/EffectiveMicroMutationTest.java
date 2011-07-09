@@ -21,7 +21,6 @@ import org.neurus.machine.Program;
 import org.neurus.machine.TestMachines;
 import org.neurus.machine.TestPrograms;
 import org.neurus.rng.RandomNumberGenerator;
-import org.neurus.util.TestBitSetUtils;
 
 public class EffectiveMicroMutationTest {
 
