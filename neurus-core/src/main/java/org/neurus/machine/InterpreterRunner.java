@@ -44,6 +44,8 @@ public class InterpreterRunner implements ProgramRunner {
   @Override
   public double[] run(double[] inputs) {
     Preconditions.checkState(loaded, "You should load a program before calling run()");
+    Preconditions.checkState(inputs.length <= machine.getNumberOfCalculationRegisters(),
+        "Not enough calculation registers for that many inputs");
     setInputsAndCleanCalculationRegisters(inputs);
     pointer = 0;
     while (pointer < totalInstructions) {
