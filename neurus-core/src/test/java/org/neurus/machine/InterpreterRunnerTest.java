@@ -97,21 +97,21 @@ public class InterpreterRunnerTest {
         1, 0, 9, 0, // if r0 > 3 (r9 is c4=3)
         1, 0, 9, 0, // if r0 > 1 (r9 is c4=3)
         0, 0, 8, 0, // r0 = r0 + 2 --> (r8 is c3=2)
+        0, 0, 9, 0, // r0 = r0 + 3 --> (r9 is c3=3)
     };
     Program program = new Program(bytecode);
     InterpreterRunner runner = new InterpreterRunner(logicMachine);
     runner.load(program);
-    // execute with r0 = 2 --> last execution should be skipped because first branch is false,
-    // doesn't matter that the second is true
+    // execute with r0 = 2 --> +2 should be skipped because first branch is false,
     double[] result = runner.run(new double[] { 2 });
-    assertEquals(2d, result[0]);
-    // execute with r0 = 3 --> last execution should be skipped because second branch is false,
-    double[] result2 = runner.run(new double[] { 2 });
-    assertEquals(2d, result2[0]);
-    // execute with r0 = 4 --> result should be r0 + 2
+    assertEquals(5d, result[0]);
+    // execute with r0 = 3 --> +2 should be skipped because second branch is false,
+    double[] result2 = runner.run(new double[] { 3 });
+    assertEquals(6d, result2[0]);
+    // execute with r0 = 4 --> result should be r0 + 2 + 3
     // because this time both branches are true
     double[] result3 = runner.run(new double[] { 4 });
-    assertEquals(6d, result3[0]);
+    assertEquals(9d, result3[0]);
   }
 
   @Test

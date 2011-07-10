@@ -11,14 +11,23 @@ public class InterpreterRunner implements ProgramRunner {
   private Machine machine;
   private double[] cleanCalculationRegisters;
   private double[] registers;
+
+  // cached machine information
+  private boolean[] operatorHasDestinationRegisters;
+  private int[] operatorNumberOfInputs;
+  private boolean[] operatorIsBranching;
+
+  // information used during execution
   private double[] cacheOutputRegisters;
+  private int pointer;
+  private int operatorIndexAtPointer;
+  private Operator operatorAtPointer;
+  private double[] instrInputs;
 
   // loaded program variables
   private boolean loaded;
   private byte[] bytecode;
-  private double[] instrInputs;
   private int totalInstructions;
-  private int pointer;
 
   public InterpreterRunner(Machine machine) {
     this.machine = machine;
@@ -27,6 +36,16 @@ public class InterpreterRunner implements ProgramRunner {
     cacheOutputRegisters = new double[machine.getNumberOfOutputRegisters()];
     registers = new double[machine.getNumberOfCalculationRegisters()
         + machine.getNumberOfConstantRegisters()];
+
+    // cache operator information
+    operatorNumberOfInputs = new int[machine.size()];
+    operatorHasDestinationRegisters = new boolean[machine.size()];
+    operatorIsBranching = new boolean[machine.size()];
+    for (int x = 0; x < machine.size(); x++) {
+      operatorHasDestinationRegisters[x] = machine.getOperator(x).hasDestinationRegister();
+      operatorNumberOfInputs[x] = machine.getOperator(x).getInputRegisters();
+      operatorIsBranching[x] = machine.getOperator(x).isBranching();
+    }
 
     // copy constant values at the end of the registers array
     double[] constantValues = machine.getConstantRegisters().getValues();
@@ -47,45 +66,54 @@ public class InterpreterRunner implements ProgramRunner {
     Preconditions.checkState(inputs.length <= machine.getNumberOfCalculationRegisters(),
         "Not enough calculation registers for that many inputs");
     setInputsAndCleanCalculationRegisters(inputs);
-    pointer = 0;
+    pointer = -1;
+    nextInstruction();
     while (pointer < totalInstructions) {
-      Operator operator = operatorAtPointer();
-      double result = executeInstruction(operator);
-      if (operator.isBranching() && result == Operator.FALSE) {
-        skipNextNonBranchingInstruction();
+      updateOperatorInfoAtPointer();
+      double result = executeInstruction();
+      if (operatorIsBranching[operatorIndexAtPointer] && result == Operator.FALSE) {
+        advanceToNextNonBranchingInstruction();
       }
-      pointer++;
+      nextInstruction();
     }
     loadCachedOutputRegisters();
     return cacheOutputRegisters;
+  }
+
+  private void nextInstruction() {
+    pointer++;
+    if (pointer < totalInstructions) {
+      updateOperatorInfoAtPointer();
+    }
+  }
+
+  private void updateOperatorInfoAtPointer() {
+    this.operatorIndexAtPointer = ubtoi(bytecode[pointerAddress()]);
+    this.operatorAtPointer = machine.getOperator(operatorIndexAtPointer);
   }
 
   private int pointerAddress() {
     return pointer * machine.getBytesPerInstruction();
   }
 
-  private void skipNextNonBranchingInstruction() {
+  private void advanceToNextNonBranchingInstruction() {
     do {
-      pointer++;
-    } while (pointer < totalInstructions && operatorAtPointer().isBranching());
-  }
-
-  private Operator operatorAtPointer() {
-    return machine.getOperator(ubtoi(bytecode[pointerAddress()]));
+      nextInstruction();
+    } while(pointer < totalInstructions && operatorIsBranching[operatorIndexAtPointer]);
   }
 
   private void loadCachedOutputRegisters() {
     System.arraycopy(registers, 0, cacheOutputRegisters, 0, cacheOutputRegisters.length);
   }
 
-  private double executeInstruction(Operator operator) {
+  private double executeInstruction() {
     int address = pointerAddress();
-    for (int i = 0; i < operator.getInputRegisters(); i++) {
+    for (int i = 0; i < operatorNumberOfInputs[operatorIndexAtPointer]; i++) {
       int regIndex = ubtoi(bytecode[address + i + 1]);
       instrInputs[i] = registers[regIndex];
     }
-    double result = operator.execute(instrInputs);
-    if (operator.hasDestinationRegister()) {
+    double result = operatorAtPointer.execute(instrInputs);
+    if (operatorHasDestinationRegisters[operatorIndexAtPointer]) {
       int regIndex = ubtoi(bytecode[address + machine.getBytesPerInstruction() - 1]);
       registers[regIndex] = result;
     }
