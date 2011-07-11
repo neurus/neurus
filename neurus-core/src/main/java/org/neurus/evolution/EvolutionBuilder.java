@@ -8,7 +8,7 @@ import org.neurus.machine.BytecodeWriter;
 import org.neurus.machine.EffectivenessAnalyzer;
 import org.neurus.machine.InstructionRandomizer;
 import org.neurus.machine.Machine;
-import org.neurus.rng.DefaultRandomNumberGenerator;
+import org.neurus.rng.MersenneTwister;
 import org.neurus.rng.RandomNumberGenerator;
 
 public class EvolutionBuilder {
@@ -33,7 +33,7 @@ public class EvolutionBuilder {
   }
 
   public Evolution build() {
-    RandomNumberGenerator rng = new DefaultRandomNumberGenerator(params.getRandomSeed());
+    RandomNumberGenerator rng = new MersenneTwister(params.getRandomSeed());
     BytecodeWriter bytecodeWriter = new BytecodeWriter(machine);
     InstructionRandomizer instructionRandomizer = new InstructionRandomizer(machine, rng,
         params.getConstantProbability());
