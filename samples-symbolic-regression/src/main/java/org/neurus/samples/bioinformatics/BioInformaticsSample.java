@@ -32,6 +32,7 @@ public abstract class BioInformaticsSample {
   public void run() {
     Dataset dataset = loadDataset();
     EvolutionParameters params = new EvolutionParameters();
+    params.setRandomSeed(System.currentTimeMillis());
     params.setPopulationSize(1000);
     params.setMaxProgramSize(200);
     params.setMaxNumberOfGenerations(500);

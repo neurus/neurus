@@ -60,6 +60,6 @@ public class EvolutionBuilder {
         .build();
     EvolutionListener evolutionListener = new LoggingEvolutionListener();
     return new SteadyStateEvolution(machine, populationFactory, rng, fitnessFunction, termination,
-        params, selector, deselector, compositeBreeder, evolutionListener);
+        params, selector, deselector, compositeBreeder, evolutionListener, effectivenessAnalyzer);
   }
 }

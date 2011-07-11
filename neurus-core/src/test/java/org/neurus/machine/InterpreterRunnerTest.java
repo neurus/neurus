@@ -14,6 +14,7 @@ import org.neurus.machine.InterpreterRunner;
 import org.neurus.machine.Machine;
 import org.neurus.machine.MachineBuilder;
 import org.neurus.machine.Program;
+import org.neurus.util.TestBitSetUtils;
 
 public class InterpreterRunnerTest {
 
@@ -49,7 +50,7 @@ public class InterpreterRunnerTest {
     };
     Program program = new Program(bytecode);
     InterpreterRunner runner = new InterpreterRunner(calculatorMachine);
-    runner.load(program);
+    runner.load(program, false);
     double[] result = runner.run(inputs);
     assertEquals(14d, result[0]);
     // if I execute the same program again, it should still give the same result
@@ -66,7 +67,7 @@ public class InterpreterRunnerTest {
     };
     Program program = new Program(bytecode);
     InterpreterRunner runner = new InterpreterRunner(calculatorMachine);
-    runner.load(program);
+    runner.load(program, false);
     double[] result = runner.run(inputs);
     assertEquals(8d, result[0]);
     // if I execute the same program again, it should still give the same result
@@ -82,7 +83,7 @@ public class InterpreterRunnerTest {
     };
     Program program = new Program(bytecode);
     InterpreterRunner runner = new InterpreterRunner(logicMachine);
-    runner.load(program);
+    runner.load(program, false);
     // execute with r0 = 1 --> result should be r0
     double[] result = runner.run(new double[] { 1 });
     assertEquals(1d, result[0]);
@@ -101,7 +102,7 @@ public class InterpreterRunnerTest {
     };
     Program program = new Program(bytecode);
     InterpreterRunner runner = new InterpreterRunner(logicMachine);
-    runner.load(program);
+    runner.load(program, false);
     // execute with r0 = 2 --> +2 should be skipped because first branch is false,
     double[] result = runner.run(new double[] { 2 });
     assertEquals(5d, result[0]);
@@ -122,12 +123,51 @@ public class InterpreterRunnerTest {
     };
     Program program = new Program(bytecode);
     InterpreterRunner runner = new InterpreterRunner(logicMachine);
-    runner.load(program);
+    runner.load(program, false);
     // execute, all branches are false, output should be equals to the input
     double[] result = runner.run(new double[] { 2 });
     assertEquals(2d, result[0]);
     // execute all branches are true, output should be equals to the input 
     double[] result2 = runner.run(new double[] { 5 });
     assertEquals(5d, result2[0]);
+  }
+
+  @Test
+  public void testExecutionOfEffectiveInstructions() {
+    double[] inputs = new double[] { 2, 3, 8 };
+    byte[] bytecode = new byte[] {
+        2, 0, 9, 2, // r2 = r0 * r9  (r9=3)
+        0, 2, 9, 0, // r0 = r2 + r9  (r9=3)
+    };
+    Program program = new Program(bytecode);
+    program.setEffectiveInstructions(TestBitSetUtils.valueOf("01"));
+    InterpreterRunner runner = new InterpreterRunner(calculatorMachine);
+    
+    // run with innefective code, both instructions are executed so r0 should be 9
+    runner.load(program, false);
+    double[] result = runner.run(inputs);
+    assertEquals(9d, result[0]);
+    
+    // run with eff code, only second instruction is executed so r0 should be 11
+    runner.load(program, true);
+    double[] result2 = runner.run(inputs);
+    assertEquals(11d, result2[0]);
+  }
+
+  @Test
+  public void testBranchesOnEffectiveProgram() {
+    byte[] bytecode = new byte[] {
+        1, 0, 9, 0, // (eff) if r0 > 3 (r9 is c4=3)
+        0, 2, 9, 0, // (eff) r0 = r2 + r9  (r9=3)
+        0, 2, 9, 0, // (noneff) r0 = r2 + r9  (r9=3)
+        0, 2, 9, 0, // (eff)r0 = r0 + r7  (r7=1)
+    };
+    Program program = new Program(bytecode);
+    InterpreterRunner runner = new InterpreterRunner(logicMachine);
+    program.setEffectiveInstructions(TestBitSetUtils.valueOf("1101"));
+    runner.load(program, true);
+    // execute, branch is false so last instr is executed
+    double[] result = runner.run(new double[] { 2 });
+    assertEquals(3d, result[0]);
   }
 }

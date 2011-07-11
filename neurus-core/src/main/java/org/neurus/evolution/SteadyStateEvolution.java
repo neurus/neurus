@@ -1,8 +1,8 @@
 package org.neurus.evolution;
 
 import org.neurus.breeder.Breeder;
-import org.neurus.fitness.Fitness;
 import org.neurus.fitness.FitnessFunction;
+import org.neurus.machine.EffectivenessAnalyzer;
 import org.neurus.machine.Machine;
 import org.neurus.rng.RandomNumberGenerator;
 
@@ -16,9 +16,9 @@ public class SteadyStateEvolution extends EvolutionBase {
       RandomNumberGenerator rng, FitnessFunction fitnessFunction,
       TerminationCriteria terminationStrategy, EvolutionParameters params,
       SelectionMethod selector, SelectionMethod deselector, Breeder breeder,
-      EvolutionListener evolutionListener) {
+      EvolutionListener evolutionListener, EffectivenessAnalyzer effectivenessAnalyzer) {
     super(machine, populationFactory, rng, fitnessFunction, terminationStrategy, params,
-        evolutionListener);
+        evolutionListener, effectivenessAnalyzer);
     this.selector = selector;
     this.deselector = deselector;
     this.breeder = breeder;
@@ -38,8 +38,7 @@ public class SteadyStateEvolution extends EvolutionBase {
       }
       Individual[] newIndividuals = breeder.breed(parents);
       for (int i = 0; i < newIndividuals.length; i++) {
-        Fitness fitness = fitnessFunction.evaluate(programRunner, newIndividuals[i]);
-        newIndividuals[i].setFitness(fitness);
+        evaluateIndividual(newIndividuals[i]);
       }
       int individualsToBeDiscarded = newIndividuals.length;
       for (int i = 0; i < individualsToBeDiscarded; i++) {

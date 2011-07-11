@@ -7,7 +7,7 @@ public class EvolutionParameters {
   private static final int DEFAULT_MAX_INITIALIZATION_PROGRAM_SIZE = 10;
   private static final int DEFAULT_MIN_PROGRAM_SIZE = 1;
   private static final int DEFAULT_MAX_PROGRAM_SIZE = 200;
-  private static final long DEFAULT_RNG_SEED = System.currentTimeMillis();
+  private static final long DEFAULT_RNG_SEED = 1L;
   private static final double DEFAULT_CONSTANT_PROBABILITY = 0.5d;
   private static final double DEFAULT_INSERTION_PROBABILITY = 0.5d;
   private static final int DEFAULT_TOURNAMENT_SIZE = 2;

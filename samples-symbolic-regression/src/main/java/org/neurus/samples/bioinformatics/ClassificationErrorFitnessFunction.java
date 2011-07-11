@@ -23,7 +23,6 @@ public class ClassificationErrorFitnessFunction implements FitnessFunction {
   @Override
   public Fitness evaluate(ProgramRunner programRunner, Individual individual) {
     double classError = 0;
-    programRunner.load(individual.getProgram());
     for (Instance instance : dataset.getInstances()) {
       double[] values = instance.getValues();
       int c = 0;

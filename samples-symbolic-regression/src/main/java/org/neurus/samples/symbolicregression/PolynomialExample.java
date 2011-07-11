@@ -69,7 +69,6 @@ class MseFitnessFunction implements FitnessFunction {
 
   @Override
   public Fitness evaluate(ProgramRunner programRunner, Individual individual) {
-    programRunner.load(individual.getProgram());
     double error = 0;
     for (int i = 0; i < values.length; i++) {
       for (int j = 0; j < inputs.length; j++) {

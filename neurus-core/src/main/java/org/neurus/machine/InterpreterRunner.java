@@ -28,6 +28,8 @@ public class InterpreterRunner implements ProgramRunner {
   private boolean loaded;
   private byte[] bytecode;
   private int totalInstructions;
+  private boolean[] effectiveInstructions;
+  private boolean runEffectiveInstructionsOnly;
 
   public InterpreterRunner(Machine machine) {
     this.machine = machine;
@@ -53,11 +55,18 @@ public class InterpreterRunner implements ProgramRunner {
         constantValues.length);
   }
 
-  public void load(Program program) {
+  public void load(Program program, boolean runEffectiveInstructionsOnly) {
+    this.runEffectiveInstructionsOnly = runEffectiveInstructionsOnly;
     bytecode = program.getBytecode();
     instrInputs = new double[machine.getMaxInputsForASingleInstruction()];
     totalInstructions = bytecode.length / machine.getBytesPerInstruction();
     loaded = true;
+    if(runEffectiveInstructionsOnly) {
+      this.effectiveInstructions = new boolean[totalInstructions];
+      for(int x = 0; x < totalInstructions; x++) {
+        effectiveInstructions[x] = program.getEffectiveInstructions().get(x);
+      }
+    }
   }
 
   @Override
@@ -81,9 +90,16 @@ public class InterpreterRunner implements ProgramRunner {
   }
 
   private void nextInstruction() {
-    pointer++;
-    if (pointer < totalInstructions) {
+    while(true) {
+      pointer++;
+      if (pointer >= totalInstructions) {
+        break;
+      }
+      if (runEffectiveInstructionsOnly && !effectiveInstructions[pointer]) {
+        continue;
+      }
       updateOperatorInfoAtPointer();
+      break;
     }
   }
 
