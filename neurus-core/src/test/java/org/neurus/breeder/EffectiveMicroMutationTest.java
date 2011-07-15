@@ -29,7 +29,7 @@ public class EffectiveMicroMutationTest {
   private static final double pConstantMut = 0.1d;
   private Individual parentIndividual;
   private EffectiveMicroMutation mutator;
-  private Machine machine = TestMachines.calculator();
+  private Machine machine = TestMachines.calculatorAndLogic();
   private InstructionRandomizer instrRandomizer = mock(InstructionRandomizer.class);
   private RandomNumberGenerator rng = mock(RandomNumberGenerator.class);
   private EffectivenessAnalyzer effectivenessAnalyzer = mock(EffectivenessAnalyzer.class);

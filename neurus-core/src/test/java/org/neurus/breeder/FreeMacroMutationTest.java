@@ -21,7 +21,9 @@ import org.neurus.machine.Program;
 import org.neurus.machine.TestMachines;
 import org.neurus.rng.RandomNumberGenerator;
 
-public class MacroMutationTest {
+public class FreeMacroMutationTest {
+
+  //TODO This is testing both FreeMacroMutation and MacroMutation base class, split?
 
   private Machine calculator = TestMachines.calculator();
   private BytecodeWriter bytecodeWriter = new BytecodeWriter(calculator);
@@ -126,7 +128,7 @@ public class MacroMutationTest {
   }
 
   private Program breedSampleProgramWithDeletion() {
-    MacroMutation mutation = new MacroMutation(calculator, rng, 0 /* no insertions */, 1, 10,
+    MacroMutation mutation = new FreeMacroMutation(calculator, rng, 0 /* no insertions */, 1, 10,
         bytecodeWriter, instructionRandomizer);
     Individual parent = new Individual(new Program(sampleProgram));
     Individual[] offsprings = mutation.breed(new Individual[] { parent });
@@ -134,7 +136,7 @@ public class MacroMutationTest {
   }
 
   private Program breedSampleProgramWithInsertion() {
-    MacroMutation mutation = new MacroMutation(calculator, rng, 1 /* only insertions */, 1, 10,
+    MacroMutation mutation = new FreeMacroMutation(calculator, rng, 1 /* only insertions */, 1, 10,
         bytecodeWriter, instructionRandomizer);
     Individual parent = new Individual(new Program(sampleProgram));
     Individual[] offsprings = mutation.breed(new Individual[] { parent });

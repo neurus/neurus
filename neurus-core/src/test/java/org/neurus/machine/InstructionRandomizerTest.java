@@ -6,11 +6,14 @@ import static org.mockito.Mockito.when;
 import static org.neurus.evolution.ByteCodeTestUtils.isCalculationRegister;
 import static org.neurus.evolution.ByteCodeTestUtils.isConstantRegister;
 
+import java.util.BitSet;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.neurus.rng.DefaultRandomNumberGenerator;
 import org.neurus.rng.RandomNumberGenerator;
+import org.neurus.util.TestBitSetUtils;
 
 public class InstructionRandomizerTest {
 
@@ -34,6 +37,27 @@ public class InstructionRandomizerTest {
       isCalculationRegister(calculatorMachine, instrData.inputRegisters[0]);
       isConstantRegister(calculatorMachine, instrData.inputRegisters[1]);
     }
+  }
+
+  @Test
+  public void testFillRandomInstructionGivenEffectiveRegisters() {
+    InstructionRandomizer instrRandomizer = new InstructionRandomizer(calculatorMachine, mockRng,
+        0d);
+    // return operator index 2
+    when(mockRng.nextInt(calculatorMachine.size())).thenReturn(2);
+    // return r2 as input register
+    when(mockRng.nextInt(calculatorMachine.getNumberOfCalculationRegisters())).thenReturn(1);
+    // return the fourth eff register, r5
+    BitSet effRegisters = TestBitSetUtils.valueOf("1101010000011111");
+    when(mockRng.nextInt(effRegisters.cardinality())).thenReturn(3);
+    
+    InstructionData instrData = calculatorMachine.createInstructionData();
+    instrRandomizer.fillRandomInstruction(instrData, effRegisters);
+
+    assertEquals(5, instrData.destinationRegister);
+    assertEquals(2, instrData.operatorIndex);
+    assertEquals(1, instrData.inputRegisters[0]);
+    assertEquals(1, instrData.inputRegisters[1]);
   }
 
   @Test

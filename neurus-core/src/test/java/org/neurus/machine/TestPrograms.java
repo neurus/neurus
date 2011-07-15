@@ -6,6 +6,7 @@ import org.neurus.util.TestBitSetUtils;
 
 public class TestPrograms {
 
+  // ** means non-effective
   public static final byte[] EXAMPLE_BYTECODE_1 = new byte[] {
       0, 5, 10, 0, // r[0] = r[5] + 71;
       1, 0, 11, 7, // ** r[7] = r[0] - 59;
@@ -27,5 +28,8 @@ public class TestPrograms {
       TestBitSetUtils.valueOf("10111011001011");
 
   public static final BitSet EXAMPLE_BYTECODE_1_EFFECTIVEREGISTERS_AT_INSTR_10 =
+    TestBitSetUtils.valueOf("1100001100");
+  
+  public static final BitSet EXAMPLE_BYTECODE_1_EFFECTIVEREGISTERS_AT_INSTR_11 =
     TestBitSetUtils.valueOf("1100001100");
 }

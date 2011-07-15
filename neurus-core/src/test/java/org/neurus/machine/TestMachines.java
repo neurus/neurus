@@ -19,6 +19,21 @@ public class TestMachines {
         .build();
   }
 
+  public static Machine calculatorAndLogic() {
+    return new MachineBuilder()
+        .withCalculationRegisters(5)
+        .withConstantRegisters(new ConstantRegisters(0, 9, 1))
+        .withOperator(MathOperators.addition())
+        .withOperator(MathOperators.substraction())
+        .withOperator(MathOperators.multiplication())
+        .withOperator(MathOperators.division())
+        .withOperator(LogicOperators.ifEquals())
+        .withOperator(LogicOperators.ifGreaterThan())
+        .withOperator(LogicOperators.ifLessThan())
+        .withOutputRegisters(1)
+        .build();
+  }
+
   public static Machine twoInstrnoInputsNoDestination() {
     return new MachineBuilder()
         .withCalculationRegisters(10)

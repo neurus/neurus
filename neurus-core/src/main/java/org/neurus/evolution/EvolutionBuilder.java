@@ -1,6 +1,7 @@
 package org.neurus.evolution;
 
 import org.neurus.breeder.CompositeBreeder;
+import org.neurus.breeder.EffectiveMacroMutation;
 import org.neurus.breeder.EffectiveMicroMutation;
 import org.neurus.breeder.MacroMutation;
 import org.neurus.fitness.FitnessFunction;
@@ -47,10 +48,10 @@ public class EvolutionBuilder {
         params.getTournamentSize());
     TournamentSelection deselector = new TournamentSelection(rng,
         params.getTournamentSize(), true);
-    MacroMutation macroMutation = new MacroMutation(machine, rng, params.getInsertionProbability(),
-        params.getMinProgramSize(), params.getMaxProgramSize(), bytecodeWriter,
-        instructionRandomizer);
     EffectivenessAnalyzer effectivenessAnalyzer = new EffectivenessAnalyzer(machine);
+    MacroMutation macroMutation = new EffectiveMacroMutation(machine, rng, params.getInsertionProbability(),
+        params.getMinProgramSize(), params.getMaxProgramSize(), bytecodeWriter,
+        instructionRandomizer, effectivenessAnalyzer);
     EffectiveMicroMutation effMicroMutation = new EffectiveMicroMutation(machine,
         instructionRandomizer, rng, effectivenessAnalyzer, params.getRegisterMutationProbability(),
         params.getOperatorMutationProbability(), params.getConstantMutationProbability());

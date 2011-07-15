@@ -1,5 +1,9 @@
 package org.neurus.machine;
 
+import static org.neurus.rng.RandomUtils.randomEnabledBit;
+
+import java.util.BitSet;
+
 import org.neurus.rng.RandomNumberGenerator;
 
 import com.google.common.base.Preconditions;
@@ -19,7 +23,7 @@ public class InstructionRandomizer {
     this.pConst = pConst;
   }
 
-  public void fillRandomInstruction(InstructionData instructionData) {
+  public void fillRandomInstruction(InstructionData instructionData, BitSet effectiveRegisters) {
     instructionData.operatorIndex = randomOperator();
     if (instructionData.inputRegisters.length > 0) {
       // there should be at least 1 calculation register
@@ -30,8 +34,16 @@ public class InstructionRandomizer {
       }
     }
     if (machine.hasDestinationRegister()) {
-      instructionData.destinationRegister = randomCalculationRegister();
+      if (effectiveRegisters == null) {
+        instructionData.destinationRegister = randomCalculationRegister();
+      } else {
+        instructionData.destinationRegister = randomEnabledBit(rng, effectiveRegisters);
+      }
     }
+  }
+
+  public void fillRandomInstruction(InstructionData instructionData) {
+    fillRandomInstruction(instructionData, null);
   }
 
   public int randomCalculationRegister() {
