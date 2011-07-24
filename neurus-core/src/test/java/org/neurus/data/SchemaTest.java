@@ -74,4 +74,13 @@ public class SchemaTest {
           expectedException.getMessage());
     }
   }
+
+  @Test
+  public void testIndexOfAttribute() {
+    Schema schema = new Schema.Builder().addNumericAttribute("att_0").addNumericAttribute("att_1")
+        .addNumericAttribute("att_2").build();
+    assertEquals(0, schema.indexOfAttribute("att_0"));
+    assertEquals(1, schema.indexOfAttribute("att_1"));
+    assertEquals(2, schema.indexOfAttribute("att_2"));
+  }
 }

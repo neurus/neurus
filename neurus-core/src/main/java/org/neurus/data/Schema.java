@@ -1,6 +1,7 @@
 package org.neurus.data;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
 import com.google.common.base.Preconditions;
@@ -21,6 +22,15 @@ public class Schema {
 
   public Attribute getAttribute(int index) {
     return attributes[index];
+  }
+
+  public int indexOfAttribute(String attributeName) {
+    for(int x = 0; x < attributeName.length(); x++) {
+      if(attributeName.equals(attributes[x].getName())) {
+        return x;
+      }
+    }
+    throw new NoSuchElementException("Attribute not found for name: " + attributeName);
   }
 
   public Instance newInstance() {

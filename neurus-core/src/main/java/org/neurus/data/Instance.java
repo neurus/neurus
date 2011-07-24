@@ -17,4 +17,8 @@ public class Instance {
   public void setValue(int x, String strValue) {
     values[x] = schema.getAttribute(x).valueOf(strValue);
   }
+
+  public double getValue(String attributeName) {
+    return values[schema.indexOfAttribute(attributeName)];
+  }
 }
