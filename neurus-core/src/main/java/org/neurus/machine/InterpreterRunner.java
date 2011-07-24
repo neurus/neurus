@@ -16,6 +16,7 @@ public class InterpreterRunner implements ProgramRunner {
   private boolean[] operatorHasDestinationRegisters;
   private int[] operatorNumberOfInputs;
   private boolean[] operatorIsBranching;
+  private Operator[] operators;
 
   // information used during execution
   private double[] cacheOutputRegisters;
@@ -43,7 +44,9 @@ public class InterpreterRunner implements ProgramRunner {
     operatorNumberOfInputs = new int[machine.size()];
     operatorHasDestinationRegisters = new boolean[machine.size()];
     operatorIsBranching = new boolean[machine.size()];
+    operators = new Operator[machine.size()];
     for (int x = 0; x < machine.size(); x++) {
+      operators[x] = machine.getOperator(x);
       operatorHasDestinationRegisters[x] = machine.getOperator(x).hasDestinationRegister();
       operatorNumberOfInputs[x] = machine.getOperator(x).getInputRegisters();
       operatorIsBranching[x] = machine.getOperator(x).isBranching();
@@ -105,7 +108,7 @@ public class InterpreterRunner implements ProgramRunner {
 
   private void updateOperatorInfoAtPointer() {
     this.operatorIndexAtPointer = ubtoi(bytecode[pointerAddress()]);
-    this.operatorAtPointer = machine.getOperator(operatorIndexAtPointer);
+    this.operatorAtPointer = operators[operatorIndexAtPointer];
   }
 
   private int pointerAddress() {
