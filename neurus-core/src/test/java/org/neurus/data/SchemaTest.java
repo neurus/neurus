@@ -32,6 +32,15 @@ public class SchemaTest {
   }
 
   @Test
+  public void testBuilderAddTextAttribute() {
+    Schema schema = new Schema.Builder()
+        .addTextAttribute("textAttribute")
+        .build();
+    TextAttribute att = (TextAttribute) schema.getAttribute(0);
+    assertEquals("textAttribute", att.getName());
+  }
+
+  @Test
   public void testBuilderAddNominalAttribute() {
     Schema schema = new Schema.Builder()
         .addNominalAttribute("aName", new String[] { "a", "b" })

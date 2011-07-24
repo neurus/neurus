@@ -57,16 +57,16 @@ public class CsvLoader {
   }
 
   private Instance createInstance(Schema schema, String[] line, int lineCounter) {
+    Instance instance = schema.newInstance();
     int attributeCount = schema.getAttributeCount();
     if (line.length != attributeCount) {
       throw new RuntimeException("Incorrect number of attributes in data file for line "
           + lineCounter + ". Expected: " + attributeCount + " but found: " + line.length);
     }
-    double[] values = new double[attributeCount];
     for (int x = 0; x < attributeCount; x++) {
-      values[x] = schema.getAttribute(x).valueOf(line[x]);
+      instance.setValue(x, line[x]);
     }
-    return new Instance(values);
+    return instance;
   }
 
   private void checkHeaders(Schema schema, String[] line) {

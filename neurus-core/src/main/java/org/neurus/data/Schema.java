@@ -23,6 +23,10 @@ public class Schema {
     return attributes[index];
   }
 
+  public Instance newInstance() {
+    return new Instance(this, new double[attributes.length]);
+  }
+
   public static class Builder {
 
     private List<Attribute> attributes = Lists.newArrayList();
@@ -37,6 +41,12 @@ public class Schema {
     public Builder addNumericAttribute(String name) {
       NumericAttribute numericAttribute = new NumericAttribute(name);
       addAttribute(numericAttribute);
+      return this;
+    }
+
+    public Builder addTextAttribute(String name) {
+      TextAttribute textAttribute = new TextAttribute(name);
+      addAttribute(textAttribute);
       return this;
     }
 
