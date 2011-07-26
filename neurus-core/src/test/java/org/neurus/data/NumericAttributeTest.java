@@ -26,4 +26,11 @@ public class NumericAttributeTest {
     assertEquals("3.45", att.labelFor(3.45d));
     assertEquals("?", att.labelFor(Double.NaN));
   }
+
+  @Test
+  public void testCopy() {
+    NumericAttribute original = new NumericAttribute("numeric_att");
+    NumericAttribute copy = original.copy();
+    assertEquals(original.getName(), copy.getName());
+  }
 }

@@ -1,6 +1,7 @@
 package org.neurus.data;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotSame;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 import static org.neurus.testing.MoreAsserts.assertStringContains;
@@ -82,5 +83,17 @@ public class SchemaTest {
     assertEquals(0, schema.indexOfAttribute("att_0"));
     assertEquals(1, schema.indexOfAttribute("att_1"));
     assertEquals(2, schema.indexOfAttribute("att_2"));
+  }
+
+  public void testCopy() {
+    Schema original = new Schema.Builder()
+        .addNumericAttribute("numerical1")
+        .addNumericAttribute("numerical2")
+        .build();
+    Schema copy = original.copy();
+    assertEquals(2, copy.getAttributeCount());
+    assertEquals("numerical1", copy.getAttribute(0).getName());
+    assertEquals("numerical2", copy.getAttribute(1).getName());
+    assertNotSame(copy.getAttribute(0), original.getAttribute(0));
   }
 }

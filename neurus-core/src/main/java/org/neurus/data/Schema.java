@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
+import org.neurus.Copyable;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class Schema {
+public class Schema implements Copyable<Schema>{
 
   private Attribute[] attributes;
 
@@ -35,6 +37,10 @@ public class Schema {
 
   public Instance newInstance() {
     return new Instance(this, new double[attributes.length]);
+  }
+
+  public Instance newInstance(Instance instance) {
+    return new Instance(this, instance);
   }
 
   public static class Builder {
@@ -72,5 +78,14 @@ public class Schema {
       Preconditions.checkState(!attributes.isEmpty(), "You need to add at least one attribute");
       return new Schema(attributes.toArray(new Attribute[attributes.size()]));
     }
+  }
+
+  @Override
+  public Schema copy() {
+    Attribute[] myAttributes = new Attribute[attributes.length];
+    for(int x = 0; x < attributes.length; x++) {
+      myAttributes[x] = attributes[x].copy();
+    }
+    return new Schema(myAttributes);
   }
 }

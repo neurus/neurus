@@ -1,5 +1,6 @@
 package org.neurus.data;
 
+
 public class Instance {
 
   private Schema schema;
@@ -8,6 +9,10 @@ public class Instance {
   Instance(Schema schema, double[] values) {
     this.schema = schema;
     this.values = values;
+  }
+
+  Instance(Schema schema, Instance copy) {
+    this(schema, copy.values.clone());
   }
 
   public double[] getValues() {

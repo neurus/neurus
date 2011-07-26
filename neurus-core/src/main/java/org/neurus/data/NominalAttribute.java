@@ -2,6 +2,7 @@ package org.neurus.data;
 
 import static org.neurus.data.AttributeUtil.isMissing;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import com.google.common.base.Preconditions;
@@ -60,5 +61,10 @@ public class NominalAttribute implements Attribute {
 
   public String[] getLabels() {
     return labels;
+  }
+
+  @Override
+  public NominalAttribute copy() {
+    return new NominalAttribute(name, Arrays.copyOf(labels, labels.length));
   }
 }

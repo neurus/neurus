@@ -90,4 +90,14 @@ public class NominalAttributeTest {
       assertStringContains("reserved to indicate missing", ex.getMessage());
     }
   }
+
+  @Test
+  public void testCopy() {
+    String[] labels = new String[] { "label1", "label2", "label3" };
+    NominalAttribute original = new NominalAttribute("someName", labels);
+    NominalAttribute copy = original.copy();
+    assertEquals(original.getName(), copy.getName());
+    assertEquals(1d, original.valueOf("label2"));
+    assertEquals("label3", original.labelFor(2d));
+  }
 }

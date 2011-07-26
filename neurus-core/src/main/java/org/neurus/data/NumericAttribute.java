@@ -30,4 +30,9 @@ public class NumericAttribute implements Attribute {
     }
     return String.valueOf(value);
   }
+
+  @Override
+  public NumericAttribute copy() {
+    return new NumericAttribute(name);
+  }
 }

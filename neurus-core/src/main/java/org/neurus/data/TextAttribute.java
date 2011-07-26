@@ -36,4 +36,13 @@ public class TextAttribute implements Attribute {
   public String labelFor(double value) {
     return indexToStr.get(value);
   }
+
+  @Override
+  public TextAttribute copy() {
+    TextAttribute textAttribute = new TextAttribute(name);
+    textAttribute.strToIndex = Maps.newHashMap(strToIndex);
+    textAttribute.indexToStr = Maps.newHashMap(indexToStr);
+    textAttribute.nextIndex = nextIndex;
+    return textAttribute;
+  }
 }
