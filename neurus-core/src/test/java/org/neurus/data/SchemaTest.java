@@ -7,6 +7,7 @@ import static junit.framework.Assert.fail;
 import static org.neurus.testing.MoreAsserts.assertStringContains;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
@@ -83,6 +84,13 @@ public class SchemaTest {
     assertEquals(0, schema.indexOfAttribute("att_0"));
     assertEquals(1, schema.indexOfAttribute("att_1"));
     assertEquals(2, schema.indexOfAttribute("att_2"));
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testIndexOfAttributeThrowsNoSuchElementForInvalidAttribute() {
+    Schema schema = new Schema.Builder().addNumericAttribute("att_0").addNumericAttribute("att_1")
+        .addNumericAttribute("att_2").build();
+    assertEquals(0, schema.indexOfAttribute("att_8"));
   }
 
   public void testCopy() {

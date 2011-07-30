@@ -27,7 +27,7 @@ public class Schema implements Copyable<Schema>{
   }
 
   public int indexOfAttribute(String attributeName) {
-    for(int x = 0; x < attributeName.length(); x++) {
+    for(int x = 0; x < attributes.length; x++) {
       if(attributeName.equals(attributes[x].getName())) {
         return x;
       }
