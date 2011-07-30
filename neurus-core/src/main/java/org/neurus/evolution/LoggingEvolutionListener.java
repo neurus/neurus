@@ -11,15 +11,28 @@ public class LoggingEvolutionListener implements EvolutionListener {
   @Override
   public void onNewGeneration(EvolutionState evolutionState) {
     double totalFitness = 0;
-    double best = Double.MAX_VALUE;
     for (int x = 0; x < evolutionState.getPopulation().size(); x++) {
       double fit = evolutionState.getPopulation().get(x).getFitness().getValue();
       totalFitness += fit;
-      best = Math.min(fit, best);
     }
     double average = totalFitness / evolutionState.getPopulation().size();
-    logger.info("Generation: " + evolutionState.getGeneration()
-        + ". Best: "  + decimalFormat.format(best)
-        + " Average fitness: " + decimalFormat.format(average));
+
+    StringBuilder message = new StringBuilder();
+    message.append("Generation: ").append(evolutionState.getGeneration()).append(".");
+    message
+        .append(" Best Training: ")
+        .append(decimalFormat
+                .format(evolutionState.getBestTrainingIndividual().getFitness().getValue()))
+        .append(".");
+    if (evolutionState.getBestValidationIndividual() != null) {
+      message
+          .append(" Best Validation: ")
+          .append(decimalFormat.format(evolutionState.getBestValidationIndividual()
+                  .getValidationFitness().getValue()))
+          .append(".");
+    }
+    message.append(" Average fitness: ").append(decimalFormat.format(average)).append(".");
+
+    logger.info(message.toString());
   }
 }

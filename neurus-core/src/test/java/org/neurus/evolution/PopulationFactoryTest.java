@@ -19,8 +19,8 @@ public class PopulationFactoryTest {
   @Test
   public void testInitializeCreatesRandomPupulation() {
     IndividualInitializer initializer = mockInitializer();
-    PopulationFactory factory = new PopulationFactory(initializer);
-    Population population = factory.initialize(50);
+    PopulationFactory factory = new PopulationFactory(initializer, 50);
+    Population population = factory.createPopulation();
     assertEquals(50, population.size());
     assertIndividuals(population);
   }

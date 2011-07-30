@@ -2,14 +2,19 @@ package org.neurus.evolution;
 
 public class EvolutionState {
 
-  // TODO Make this immutable or return copies in Evolution?
+  // TODO Create an immutable snapshot of this data to return to the user
 
   private int generationNumber = -1;
   private Population population;
+  private Individual bestTrainingIndividual;
+  private Individual bestValidationIndividual;
 
-  public void nextGeneration(Population newPopulation) {
+  public void incrementGeneration() {
     generationNumber++;
-    population = newPopulation;
+  }
+
+  public void setPopulation(Population population) {
+    this.population = population;
   }
 
   public Population getPopulation() {
@@ -18,5 +23,21 @@ public class EvolutionState {
 
   public int getGeneration() {
     return generationNumber;
+  }
+
+  public Individual getBestTrainingIndividual() {
+    return bestTrainingIndividual;
+  }
+
+  public void setBestTrainingIndividual(Individual bestTrainingIndividual) {
+    this.bestTrainingIndividual = bestTrainingIndividual;
+  }
+
+  public Individual getBestValidationIndividual() {
+    return bestValidationIndividual;
+  }
+
+  public void setBestValidationIndividual(Individual bestValidationIndividual) {
+    this.bestValidationIndividual = bestValidationIndividual;
   }
 }

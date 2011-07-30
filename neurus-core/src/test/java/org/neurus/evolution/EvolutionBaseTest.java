@@ -3,136 +3,94 @@ package org.neurus.evolution;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertSame;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
-
-import java.util.BitSet;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
-import org.neurus.TestFitnessFunctions;
 import org.neurus.fitness.Fitness;
-import org.neurus.fitness.FitnessFunction;
-import org.neurus.machine.EffectivenessAnalyzer;
-import org.neurus.machine.Machine;
-import org.neurus.machine.Program;
-import org.neurus.machine.ProgramRunner;
-import org.neurus.rng.DefaultRandomNumberGenerator;
-import org.neurus.rng.RandomNumberGenerator;
-import org.neurus.util.TestBitSetUtils;
+import org.neurus.fitness.FitnessEvaluator;
 
 public class EvolutionBaseTest {
 
   private static final int POP_SIZE = 5;
+
   private TestEvolutionBaseImplementor evolution;
   private TerminationCriteria terminationCriteria;
   private PopulationFactory populationFactory;
   private Population population;
   private TestEvolutionListener evolutionListener;
-  private EffectivenessAnalyzer effAnalyzer;
-  private ProgramRunner programRunner;
-  private FitnessFunction fitnessFunction;
+  private FitnessEvaluator fitnessEvaluator;
 
   @Before
   public void setUp() {
-    programRunner = mock(ProgramRunner.class);
-    Machine machine = mock(Machine.class);
-    when(machine.createRunner()).thenReturn(programRunner);
-    EvolutionParameters params = new EvolutionParameters();
-    params.setPopulationSize(POP_SIZE);
-    population = TestPopulations.populationOfSize(POP_SIZE);
     terminationCriteria = mock(TerminationCriteria.class);
-    fitnessFunction = TestFitnessFunctions.constantFitnessFunction(10d);
-    fitnessFunction = spy(fitnessFunction);
-    RandomNumberGenerator rng = new DefaultRandomNumberGenerator(1L);
     populationFactory = mock(PopulationFactory.class);
-    effAnalyzer = mock(EffectivenessAnalyzer.class);
-    when(populationFactory.initialize(POP_SIZE)).thenReturn(population);
+    population = TestPopulations.populationOfSize(POP_SIZE);
+    when(populationFactory.createPopulation()).thenReturn(population);
     evolutionListener = new TestEvolutionListener();
-    evolution = new TestEvolutionBaseImplementor(machine, populationFactory, rng,
-        fitnessFunction, terminationCriteria, params, evolutionListener, effAnalyzer);
+    fitnessEvaluator = mock(FitnessEvaluator.class);
+    evolution = new TestEvolutionBaseImplementor(populationFactory, fitnessEvaluator,
+        terminationCriteria, evolutionListener);
   }
 
   @Test
-  public void testEvolutionBaseInitializesCorrectlyTheFirstGeneration() {
+  public void testFirstGeneration() {
     stopRightAfterGeneration(0);
+    setupFitnesses(0.4, 0.6, 0.3, 0.8, 0.9);
+
     evolution.evolve();
+
     // verify that the evolution state is correct
     EvolutionState evolutionState = evolution.getEvolutionState();
     assertEquals(0, evolutionState.getGeneration());
     assertEquals(5, evolutionState.getPopulation().size());
     assertEquals(0, evolution.evolveGenerationCounter);
-    assertAllIndividualsHaveFitness(evolutionState.getPopulation(), 10d);
+    assertSame(population.get(2), evolutionState.getBestTrainingIndividual());
+    assertAllIndividualsHaveFitness(evolutionState.getPopulation(), 0.4, 0.6, 0.3, 0.8, 0.9);
   }
 
   @Test
-  public void testEvaluateIndividual() {
+  public void testFirstGenerationWithValidationFitness() {
+    when(fitnessEvaluator.validates()).thenReturn(true);
     stopRightAfterGeneration(0);
-    storeEmptyBitSetWhenAnalyzedIsCalled();
-    ensureAnalyzeWasCalledBeforeProgramLoading();
-    ensureProgramIsLoadedBeforeEvaluation();
+    setupFitnesses(0.4, 0.3, 0.5, 0.2, 0.1);
+    setupValidationFitnesses(0.4, 0.5, 0, 0.3, 0.6);
+
     evolution.evolve();
+
+    // best training individiual should be the last one
     EvolutionState evolutionState = evolution.getEvolutionState();
-    assertAllIndividualsHaveFitness(evolutionState.getPopulation(), 10d);
-  }
+    assertSame(population.get(4), evolutionState.getBestTrainingIndividual());
 
-  private void ensureProgramIsLoadedBeforeEvaluation() {
-    when(fitnessFunction.evaluate(same(programRunner), any(Individual.class)))
-        .thenAnswer(new Answer<Fitness>() {
-          @Override
-          public Fitness answer(InvocationOnMock invocation) throws Throwable {
-            Program p = ((Individual) invocation.getArguments()[1]).getProgram();
-            assertEquals(TestBitSetUtils.valueOf("1"), p.getEffectiveInstructions());
-            return (Fitness) invocation.callRealMethod();
-          }
-        });
-  }
-
-  private void ensureAnalyzeWasCalledBeforeProgramLoading() {
-    doAnswer(new Answer<Object>() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        Program p = (Program) invocation.getArguments()[0];
-        assertEquals(p.getEffectiveInstructions(), new BitSet());
-        p.setEffectiveInstructions(TestBitSetUtils.valueOf("1"));
-        return null;
-      }
-    }).when(programRunner).load(any(Program.class), eq(true));
-  }
-
-  private void storeEmptyBitSetWhenAnalyzedIsCalled() {
-    doAnswer(new Answer<Object>() {
-      @Override
-      public Object answer(InvocationOnMock invocation) throws Throwable {
-        Program p = (Program) invocation.getArguments()[0];
-        p.setEffectiveInstructions(new BitSet());
-        return null;
-      }
-    }).when(effAnalyzer).analyzeProgram(any(Program.class));
+    // best validation should be 0.3, because the one with 0 was never best training
+    assertSame(population.get(3), evolutionState.getBestValidationIndividual());
   }
 
   @Test
   public void testEvolutionAdvancesGenerationsCorrectly() {
     stopRightAfterGeneration(2);
+    setupFitnesses(0.4, 0.6, 0.7, 0.8, 0.9);
+
     evolution.evolve();
+
     // verify that the evolution state is correct
     EvolutionState evolutionState = evolution.getEvolutionState();
     assertEquals(2, evolutionState.getGeneration());
     assertEquals(2, evolution.evolveGenerationCounter);
-    assertSame(evolution.lastPopulationReturned, evolutionState.getPopulation());
   }
 
   @Test
   public void testEvolutionCallsListenerAfterEachPopulation() {
     stopRightAfterGeneration(2);
+    setupFitnesses(0.4, 0.6, 0.7, 0.8, 0.9);
+
     evolution.evolve();
+
     // verify that the listener got called three times, initial pop + 2 evolutions
     assertEquals(2, evolutionListener.lastCalledForGeneration);
   }
@@ -146,9 +104,37 @@ public class EvolutionBaseTest {
     stub.thenReturn(true);
   }
 
-  private void assertAllIndividualsHaveFitness(Population pop, double fitnessValue) {
+  private void assertAllIndividualsHaveFitness(Population pop, double... fitnessValues) {
     for (int x = 0; x < pop.size(); x++) {
-      assertEquals(pop.get(x).getFitness().getValue(), fitnessValue);
+      assertEquals(pop.get(x).getFitness().getValue(), fitnessValues[x]);
+    }
+  }
+
+  private void setupFitnesses(final double... fit) {
+    for (int x = 0; x < fit.length; x++) {
+      final double fitness = fit[x];
+      Mockito.doAnswer(new Answer<Void>() {
+
+        @Override
+        public Void answer(InvocationOnMock invocation) throws Throwable {
+          ((Individual) invocation.getArguments()[0]).setFitness(new Fitness(fitness));
+          return null;
+        }
+      }).when(fitnessEvaluator).evaluateFitness(population.get(x));
+    }
+  }
+
+  private void setupValidationFitnesses(final double... fit) {
+    for (int x = 0; x < fit.length; x++) {
+      final double fitness = fit[x];
+      Mockito.doAnswer(new Answer<Void>() {
+
+        @Override
+        public Void answer(InvocationOnMock invocation) throws Throwable {
+          ((Individual) invocation.getArguments()[0]).setValidationFitness(new Fitness(fitness));
+          return null;
+        }
+      }).when(fitnessEvaluator).evaluateValidationFitness(population.get(x));
     }
   }
 }
@@ -156,21 +142,16 @@ public class EvolutionBaseTest {
 class TestEvolutionBaseImplementor extends EvolutionBase {
 
   int evolveGenerationCounter;
-  Population lastPopulationReturned;
 
-  public TestEvolutionBaseImplementor(Machine machine, PopulationFactory populationFactory,
-      RandomNumberGenerator rng, FitnessFunction fitnessFunction,
-      TerminationCriteria terminationStrategy, EvolutionParameters params,
-      EvolutionListener evolutionListener, EffectivenessAnalyzer effectivenessAnalyzer) {
-    super(machine, populationFactory, rng, fitnessFunction, terminationStrategy, params,
-        evolutionListener, effectivenessAnalyzer);
+  public TestEvolutionBaseImplementor(PopulationFactory populationFactory,
+      FitnessEvaluator fitnessEvaluator, TerminationCriteria terminationStrategy,
+      EvolutionListener evolutionListener) {
+    super(populationFactory, fitnessEvaluator, terminationStrategy, evolutionListener);
   }
 
   @Override
-  protected Population evolveOneGeneration() {
+  protected void evolveOneGeneration() {
     evolveGenerationCounter++;
-    lastPopulationReturned = new Population(evolutionState.getPopulation());
-    return lastPopulationReturned;
   }
 }
 
