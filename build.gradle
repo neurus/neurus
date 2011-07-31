@@ -1,3 +1,5 @@
+//TODO detect automatically so it works in all machines
+LOCAL_REPOSITORY_PATH = "file://localhost/tmp/myRepo/";
 
 libraries = [
   guava: 'com.google.guava:guava:r09',
@@ -11,7 +13,9 @@ libraries = [
 
 subprojects {
   version = '1.0-SNAPSHOT'
+  group="org.neurus"
 
+  apply plugin: 'maven'
   apply plugin: 'java'
   apply plugin: 'eclipse'
 
@@ -36,6 +40,12 @@ subprojects {
     testCompile libraries.mockito
     testCompile libraries.powermock_mockito
     testCompile libraries.powermock_junit4
+  }
+
+  uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: LOCAL_REPOSITORY_PATH)
+    }
   }
 
   buildscript {
