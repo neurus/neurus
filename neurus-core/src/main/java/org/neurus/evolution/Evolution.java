@@ -4,5 +4,5 @@ public interface Evolution {
 
   void evolve();
 
-  EvolutionState getEvolutionState();
+  EvolutionSnapshot getEvolutionSnapshot();
 }

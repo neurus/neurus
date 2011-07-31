@@ -5,6 +5,7 @@ import static junit.framework.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,8 +47,8 @@ public class EvolutionBaseTest {
     evolution.evolve();
 
     // verify that the evolution state is correct
-    EvolutionState evolutionState = evolution.getEvolutionState();
-    assertEquals(0, evolutionState.getGeneration());
+    EvolutionSnapshot evolutionState = evolution.getEvolutionSnapshot();
+    assertEquals(0, evolutionState.getGenerationNumber());
     assertEquals(5, evolutionState.getPopulation().size());
     assertEquals(0, evolution.evolveGenerationCounter);
     assertSame(population.get(2), evolutionState.getBestTrainingIndividual());
@@ -64,11 +65,11 @@ public class EvolutionBaseTest {
     evolution.evolve();
 
     // best training individiual should be the last one
-    EvolutionState evolutionState = evolution.getEvolutionState();
-    assertSame(population.get(4), evolutionState.getBestTrainingIndividual());
+    EvolutionSnapshot evolutionSnapshot = evolution.getEvolutionSnapshot();
+    assertSame(population.get(4), evolutionSnapshot.getBestTrainingIndividual());
 
     // best validation should be 0.3, because the one with 0 was never best training
-    assertSame(population.get(3), evolutionState.getBestValidationIndividual());
+    assertSame(population.get(3), evolutionSnapshot.getBestValidationIndividual());
   }
 
   @Test
@@ -79,8 +80,8 @@ public class EvolutionBaseTest {
     evolution.evolve();
 
     // verify that the evolution state is correct
-    EvolutionState evolutionState = evolution.getEvolutionState();
-    assertEquals(2, evolutionState.getGeneration());
+    EvolutionSnapshot evolutionSnapshot= evolution.getEvolutionSnapshot();
+    assertEquals(2, evolutionSnapshot.getGenerationNumber());
     assertEquals(2, evolution.evolveGenerationCounter);
   }
 
@@ -93,6 +94,13 @@ public class EvolutionBaseTest {
 
     // verify that the listener got called three times, initial pop + 2 evolutions
     assertEquals(2, evolutionListener.lastCalledForGeneration);
+  }
+
+  @Test
+  public void testEmptyEvolutionSnapshot() {
+    EvolutionSnapshot snapshot = evolution.getEvolutionSnapshot();
+
+    Assert.assertEquals(-1, snapshot.getGenerationNumber());
   }
 
   private void stopRightAfterGeneration(int genNumber) {
@@ -160,9 +168,9 @@ class TestEvolutionListener implements EvolutionListener {
   int lastCalledForGeneration = -1;
 
   @Override
-  public void onNewGeneration(EvolutionState evolutionState) {
+  public void onNewGeneration(EvolutionSnapshot evolutionSnapshot) {
     assertEquals("Was expecting a different generation", lastCalledForGeneration + 1,
-        evolutionState.getGeneration());
-    lastCalledForGeneration = evolutionState.getGeneration();
+        evolutionSnapshot.getGenerationNumber());
+    lastCalledForGeneration = evolutionSnapshot.getGenerationNumber();
   }
 }

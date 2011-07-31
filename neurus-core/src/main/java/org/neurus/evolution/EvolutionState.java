@@ -2,8 +2,6 @@ package org.neurus.evolution;
 
 public class EvolutionState {
 
-  // TODO Create an immutable snapshot of this data to return to the user
-
   private int generationNumber = -1;
   private Population population;
   private Individual bestTrainingIndividual;
@@ -39,5 +37,11 @@ public class EvolutionState {
 
   public void setBestValidationIndividual(Individual bestValidationIndividual) {
     this.bestValidationIndividual = bestValidationIndividual;
+  }
+
+  public EvolutionSnapshot takeSnapshot() {
+    Population popCopy = population == null ? null : population.copy();
+    return new EvolutionSnapshot(generationNumber, popCopy, bestTrainingIndividual,
+        bestValidationIndividual);
   }
 }

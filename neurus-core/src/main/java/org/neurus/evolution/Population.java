@@ -1,15 +1,13 @@
 package org.neurus.evolution;
 
-public class Population {
+import org.neurus.Copyable;
+
+public class Population implements Copyable<Population> {
   
   private Individual[] individuals;
 
   public Population(Individual[] individuals) {
     this.individuals = individuals;
-  }
-
-  public Population(Population population) {
-    this.individuals = population.individuals.clone();
   }
 
   public int size() {
@@ -22,5 +20,10 @@ public class Population {
 
   public void replace(int toBeDiscardedIndex, Individual individual) {
     individuals[toBeDiscardedIndex] = individual;
+  }
+
+  @Override
+  public Population copy() {
+    return new Population(individuals.clone());
   }
 }

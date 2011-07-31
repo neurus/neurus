@@ -8,7 +8,7 @@ public abstract class EvolutionBase implements Evolution {
   protected final TerminationCriteria terminationCriteria;
   protected final EvolutionListener evolutionListener;
   protected final FitnessEvaluator fitnessEvaluator;
-
+  private EvolutionSnapshot lastSnapshot = new EvolutionSnapshot();
   protected EvolutionState evolutionState;
 
   public EvolutionBase(PopulationFactory populationFactory, FitnessEvaluator fitnessEvaluator,
@@ -23,11 +23,10 @@ public abstract class EvolutionBase implements Evolution {
   public void evolve() {
     evolutionState = new EvolutionState();
     createInitialGeneration();
-    evolutionListener.onNewGeneration(evolutionState);
+    doAfterGeneration();
     while (!terminationCriteria.shouldTerminate(evolutionState)) {
       evolveOneGeneration();
-      evolutionState.incrementGeneration();
-      evolutionListener.onNewGeneration(evolutionState);
+      doAfterGeneration();
     }
   }
 
@@ -40,8 +39,6 @@ public abstract class EvolutionBase implements Evolution {
       fitnessEvaluator.evaluateFitness(population.get(x));
       updateBestIndividuals(population.get(x));
     }
-
-    evolutionState.incrementGeneration();
   }
 
   protected void updateBestIndividuals(Individual individual) {
@@ -64,8 +61,14 @@ public abstract class EvolutionBase implements Evolution {
     }
   }
 
-  public EvolutionState getEvolutionState() {
-    return evolutionState;
+  private void doAfterGeneration() {
+    evolutionState.incrementGeneration();
+    lastSnapshot = evolutionState.takeSnapshot();
+    evolutionListener.onNewGeneration(lastSnapshot);
+  }
+
+  public EvolutionSnapshot getEvolutionSnapshot() {
+    return lastSnapshot;
   }
 
   protected abstract void evolveOneGeneration();

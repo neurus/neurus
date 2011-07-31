@@ -9,25 +9,25 @@ public class LoggingEvolutionListener implements EvolutionListener {
   private static DecimalFormat decimalFormat = new DecimalFormat("0.000000");
 
   @Override
-  public void onNewGeneration(EvolutionState evolutionState) {
+  public void onNewGeneration(EvolutionSnapshot evolutionSnapshot) {
     double totalFitness = 0;
-    for (int x = 0; x < evolutionState.getPopulation().size(); x++) {
-      double fit = evolutionState.getPopulation().get(x).getFitness().getValue();
+    for (int x = 0; x < evolutionSnapshot.getPopulation().size(); x++) {
+      double fit = evolutionSnapshot.getPopulation().get(x).getFitness().getValue();
       totalFitness += fit;
     }
-    double average = totalFitness / evolutionState.getPopulation().size();
+    double average = totalFitness / evolutionSnapshot.getPopulation().size();
 
     StringBuilder message = new StringBuilder();
-    message.append("Generation: ").append(evolutionState.getGeneration()).append(".");
+    message.append("Generation: ").append(evolutionSnapshot.getGenerationNumber()).append(".");
     message
         .append(" Best Training: ")
         .append(decimalFormat
-                .format(evolutionState.getBestTrainingIndividual().getFitness().getValue()))
+                .format(evolutionSnapshot.getBestTrainingIndividual().getFitness().getValue()))
         .append(".");
-    if (evolutionState.getBestValidationIndividual() != null) {
+    if (evolutionSnapshot.getBestValidationIndividual() != null) {
       message
           .append(" Best Validation: ")
-          .append(decimalFormat.format(evolutionState.getBestValidationIndividual()
+          .append(decimalFormat.format(evolutionSnapshot.getBestValidationIndividual()
                   .getValidationFitness().getValue()))
           .append(".");
     }

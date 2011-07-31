@@ -32,9 +32,9 @@ public class PopulationTest {
   }
 
   @Test
-  public void testCopyConstructor() {
+  public void testCopy() {
     Population pop = new Population(new Individual[] { ind1, ind2 });
-    Population clonedPop = new Population(pop);
+    Population clonedPop = pop.copy();
     assertEquals(2, clonedPop.size());
     assertSame(ind1, clonedPop.get(0));
     assertSame(ind2, clonedPop.get(1));
@@ -52,7 +52,7 @@ public class PopulationTest {
   @Test
   public void testReplacingOnClonedPopulationDoNotAffectOriginal() {
     Population pop = new Population(new Individual[] { ind1, ind2 });
-    Population clonedPop = new Population(pop);
+    Population clonedPop = pop.copy();
     clonedPop.replace(0, ind3);
     assertSame(ind1, pop.get(0));
   }
