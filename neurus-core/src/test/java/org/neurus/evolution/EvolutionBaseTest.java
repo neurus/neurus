@@ -1,9 +1,11 @@
 package org.neurus.evolution;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import junit.framework.Assert;
 
@@ -15,6 +17,7 @@ import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.OngoingStubbing;
 import org.neurus.fitness.Fitness;
 import org.neurus.fitness.FitnessEvaluator;
+import org.neurus.rng.RandomNumberGenerator;
 
 public class EvolutionBaseTest {
 
@@ -24,19 +27,23 @@ public class EvolutionBaseTest {
   private TerminationCriteria terminationCriteria;
   private PopulationFactory populationFactory;
   private Population population;
-  private TestEvolutionListener evolutionListener;
   private FitnessEvaluator fitnessEvaluator;
+  private SelectionMethod selector;
+  private SelectionMethod deselector;
+  private RandomNumberGenerator rng;
 
   @Before
   public void setUp() {
     terminationCriteria = mock(TerminationCriteria.class);
     populationFactory = mock(PopulationFactory.class);
+    selector = mock(SelectionMethod.class);
+    deselector = mock(SelectionMethod.class);
+    rng = mock(RandomNumberGenerator.class);
     population = TestPopulations.populationOfSize(POP_SIZE);
     when(populationFactory.createPopulation()).thenReturn(population);
-    evolutionListener = new TestEvolutionListener();
     fitnessEvaluator = mock(FitnessEvaluator.class);
     evolution = new TestEvolutionBaseImplementor(populationFactory, fitnessEvaluator,
-        terminationCriteria, evolutionListener);
+        terminationCriteria, rng, selector, deselector);
   }
 
   @Test
@@ -80,13 +87,55 @@ public class EvolutionBaseTest {
     evolution.evolve();
 
     // verify that the evolution state is correct
-    EvolutionSnapshot evolutionSnapshot= evolution.getEvolutionSnapshot();
+    EvolutionSnapshot evolutionSnapshot = evolution.getEvolutionSnapshot();
     assertEquals(2, evolutionSnapshot.getGenerationNumber());
     assertEquals(2, evolution.evolveGenerationCounter);
   }
 
   @Test
+  public void testMigrateIndividualsOnEachGeneration() {
+    stopRightAfterGeneration(2);
+    setupFitnesses(0.4, 0.6, 0.7, 0.8, 0.9);
+    Exchanger exchanger = mock(Exchanger.class);
+    evolution.setExchanger(exchanger);
+
+    evolution.evolve();
+
+    verify(exchanger).migrateIndividuals(population, 1);
+    verify(exchanger).migrateIndividuals(population, 2);
+  }
+
+  @Test
+  public void testGetRandonNumberGenerator() {
+    assertSame(rng, evolution.getRandomNumberGenerator());
+  }
+
+  @Test
+  public void testReceiveImmigrantsOnEachGeneration() {
+    stopRightAfterGeneration(1);
+    Exchanger exchanger = mock(Exchanger.class);
+    when(deselector.select(population)).thenReturn(0).thenReturn(1);
+    setupFitnesses(0.4, 0.6, 0.7, 0.8, 0.9);
+    evolution.setExchanger(exchanger);
+    Population foreignPopulation = TestPopulations.populationWithFitnesses(0.2, 0.1);
+    foreignPopulation.get(0).setValidationFitness(new Fitness(0.01));
+    when(exchanger.receiveIndividuals())
+        .thenReturn(newArrayList(foreignPopulation.get(0), foreignPopulation.get(1)))
+        .thenThrow(new RuntimeException("Shouldn't have been called anymore"));
+
+    evolution.evolve();
+
+    // verify that the evolution state is correct
+    EvolutionSnapshot evolutionSnapshot = evolution.getEvolutionSnapshot();
+    assertSame(foreignPopulation.get(0), evolutionSnapshot.getPopulation().get(0));
+    assertSame(foreignPopulation.get(1), evolutionSnapshot.getPopulation().get(1));
+    assertEquals(foreignPopulation.get(1), evolutionSnapshot.getBestTrainingIndividual());
+  }
+
+  @Test
   public void testEvolutionCallsListenerAfterEachPopulation() {
+    TestEvolutionListener evolutionListener = new TestEvolutionListener();
+    evolution.setEvolutionListener(evolutionListener);
     stopRightAfterGeneration(2);
     setupFitnesses(0.4, 0.6, 0.7, 0.8, 0.9);
 
@@ -153,8 +202,8 @@ class TestEvolutionBaseImplementor extends EvolutionBase {
 
   public TestEvolutionBaseImplementor(PopulationFactory populationFactory,
       FitnessEvaluator fitnessEvaluator, TerminationCriteria terminationStrategy,
-      EvolutionListener evolutionListener) {
-    super(populationFactory, fitnessEvaluator, terminationStrategy, evolutionListener);
+      RandomNumberGenerator rng, SelectionMethod selector, SelectionMethod deselector) {
+    super(populationFactory, fitnessEvaluator, terminationStrategy, rng, selector, deselector);
   }
 
   @Override

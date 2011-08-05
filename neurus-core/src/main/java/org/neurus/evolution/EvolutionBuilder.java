@@ -41,7 +41,12 @@ public class EvolutionBuilder {
   }
 
   public Evolution build() {
-    RandomNumberGenerator rng = new MersenneTwister(params.getRandomSeed());
+    Evolution evolution = buildIsland(0);
+    return evolution;
+  }
+
+  public Evolution buildIsland(int islandIndex) {
+    RandomNumberGenerator rng = new MersenneTwister(params.getRandomSeed() + islandIndex);
     BytecodeWriter bytecodeWriter = new BytecodeWriter(machine);
     InstructionRandomizer instructionRandomizer = new InstructionRandomizer(machine, rng,
         params.getConstantProbability());
@@ -70,8 +75,10 @@ public class EvolutionBuilder {
         .build();
     FitnessEvaluator fitnessEvaluator = new FitnessEvaluator(machine.createRunner(),
         effectivenessAnalyzer, fitnessFunction, validationFitnessFunction);
-    EvolutionListener evolutionListener = new LoggingEvolutionListener();
-    return new SteadyStateEvolution(populationFactory, fitnessEvaluator,
-        termination, selector, deselector, compositeBreeder, evolutionListener);
+    Evolution evolution = new SteadyStateEvolution(populationFactory, fitnessEvaluator,
+        termination, rng, selector, deselector, compositeBreeder);
+    evolution.setEvolutionListener(
+        new LoggingEvolutionListener("Island: " + individualInitializer + ". "));
+    return evolution;
   }
 }

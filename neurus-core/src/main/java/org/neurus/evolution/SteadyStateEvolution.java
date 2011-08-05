@@ -2,20 +2,17 @@ package org.neurus.evolution;
 
 import org.neurus.breeder.Breeder;
 import org.neurus.fitness.FitnessEvaluator;
+import org.neurus.rng.RandomNumberGenerator;
 
 public class SteadyStateEvolution extends EvolutionBase {
 
-  private SelectionMethod selector;
-  private SelectionMethod deselector;
   private Breeder breeder;
 
   public SteadyStateEvolution(PopulationFactory populationFactory,
       FitnessEvaluator fitnessEvaluator, TerminationCriteria terminationStrategy,
-      SelectionMethod selector, SelectionMethod deselector, Breeder breeder,
-      EvolutionListener evolutionListener) {
-    super(populationFactory, fitnessEvaluator, terminationStrategy, evolutionListener);
-    this.selector = selector;
-    this.deselector = deselector;
+      RandomNumberGenerator rng, SelectionMethod selector, SelectionMethod deselector,
+      Breeder breeder) {
+    super(populationFactory, fitnessEvaluator, terminationStrategy, rng, selector, deselector);
     this.breeder = breeder;
   }
 
@@ -35,9 +32,6 @@ public class SteadyStateEvolution extends EvolutionBase {
       for (int i = 0; i < newIndividuals.length; i++) {
         fitnessEvaluator.evaluateFitness(newIndividuals[i]);
         updateBestIndividuals(newIndividuals[i]);
-      }
-      int individualsToBeDiscarded = newIndividuals.length;
-      for (int i = 0; i < individualsToBeDiscarded; i++) {
         int toBeDiscardedIndex = deselector.select(pop);
         pop.replace(toBeDiscardedIndex, newIndividuals[i]);
         individualsGenerated++;

@@ -35,7 +35,19 @@ public class LoggingEvolutionListenerTest {
     listener.onNewGeneration(es);
     verify(logger).info(loggingCaptor.capture());
     assertStringContains("Generation: 45", loggingCaptor.getValue());
-    assertStringContains("Average fitness: 0.833333", loggingCaptor.getValue());
+    assertStringContains("Best Training: 0.250000", loggingCaptor.getValue());
+  }
+
+  @Test
+  public void testPrefix() {
+    LoggingEvolutionListener listener = new LoggingEvolutionListener("My Prefix. ");
+    Population population = TestPopulations.populationWithFitnesses(0.25, 1.0, 1.25);
+    EvolutionSnapshot es = new EvolutionSnapshot(45, population, population.get(0), null);
+    listener.onNewGeneration(es);
+    verify(logger).info(loggingCaptor.capture());
+    
+    assertStringContains("My Prefix. ", loggingCaptor.getValue());
+    assertStringContains("Generation: 45", loggingCaptor.getValue());
     assertStringContains("Best Training: 0.250000", loggingCaptor.getValue());
   }
 
@@ -44,11 +56,11 @@ public class LoggingEvolutionListenerTest {
     LoggingEvolutionListener listener = new LoggingEvolutionListener();
     Population population = TestPopulations.populationWithFitnesses(0.25, 1.0, 1.25);
     population.get(1).setValidationFitness(new Fitness(0.8345888888d));
-    EvolutionSnapshot es = new EvolutionSnapshot(45, population, population.get(0), population.get(1));
+    EvolutionSnapshot es = new EvolutionSnapshot(45, population, population.get(0),
+        population.get(1));
     listener.onNewGeneration(es);
     verify(logger).info(loggingCaptor.capture());
     assertStringContains("Generation: 45", loggingCaptor.getValue());
-    assertStringContains("Average fitness: 0.833333", loggingCaptor.getValue());
     assertStringContains("Best Training: 0.250000", loggingCaptor.getValue());
     assertStringContains("Best Validation: 0.834589", loggingCaptor.getValue());
   }

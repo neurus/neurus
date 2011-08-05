@@ -2,5 +2,5 @@ package org.neurus.evolution;
 
 public interface EvolutionListener {
 
-  void onNewGeneration(EvolutionSnapshot evolutionState);
+  void onNewGeneration(EvolutionSnapshot evolutionSnapshot);
 }
