@@ -15,9 +15,10 @@ import java.net.URL;
 import org.neurus.data.CsvLoader;
 import org.neurus.data.Dataset;
 import org.neurus.data.Schema;
-import org.neurus.evolution.Evolution;
 import org.neurus.evolution.EvolutionBuilder;
 import org.neurus.evolution.EvolutionParameters;
+import org.neurus.island.MultiIslandEvolution;
+import org.neurus.island.MultiIslandEvolutionBuilder;
 import org.neurus.machine.ConstantRegisters;
 import org.neurus.machine.Machine;
 import org.neurus.machine.MachineBuilder;
@@ -38,10 +39,13 @@ public abstract class BioInformaticsSample {
     params.setMaxNumberOfGenerations(500);
     params.setMinInitializationProgramSize(10);
     params.setMaxInitializationProgramSize(30);
-    Evolution evolution = new EvolutionBuilder()
+    EvolutionBuilder evolutionBuilder = new EvolutionBuilder()
         .withMachine(createMachine(dataset.getSchema().getAttributeCount() - 1))
-        .withFitnessFunction(new ClassificationErrorFitnessFunction(dataset, 0))
-        .withEvolutionParameters(params)
+        .withFitnessFunction(new WinnerTakesAllClassification(dataset, 0))
+        .withEvolutionParameters(params);
+    MultiIslandEvolution evolution = new MultiIslandEvolutionBuilder()
+        .withEvolution(evolutionBuilder)
+        .withNumberOfIslands(4)
         .build();
     evolution.evolve();
   }
@@ -74,7 +78,7 @@ public abstract class BioInformaticsSample {
         .withOperator(ifLessThanOrEquals())
         .withCalculationRegisters(numberOfInputs + 10)
         .withConstantRegisters(new ConstantRegisters(0, 9, 1))
-        .withOutputRegisters(1)
+        .withOutputRegisters(19)
         .build();
   }
 }

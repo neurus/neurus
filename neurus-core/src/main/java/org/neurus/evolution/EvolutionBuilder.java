@@ -78,7 +78,7 @@ public class EvolutionBuilder {
     Evolution evolution = new SteadyStateEvolution(populationFactory, fitnessEvaluator,
         termination, rng, selector, deselector, compositeBreeder);
     evolution.setEvolutionListener(
-        new LoggingEvolutionListener("Island: " + individualInitializer + ". "));
+        new LoggingEvolutionListener("Island: " + islandIndex + ". "));
     return evolution;
   }
 }

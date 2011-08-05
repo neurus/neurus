@@ -7,22 +7,20 @@ import org.neurus.fitness.Fitness;
 import org.neurus.fitness.FitnessFunction;
 import org.neurus.machine.ProgramRunner;
 
-public class ClassificationErrorFitnessFunction implements FitnessFunction {
+public class WinnerTakesAllClassification implements FitnessFunction {
 
   private Dataset dataset;
   private int classAttributeIndex;
 
-  private double[] inputs;
-
-  public ClassificationErrorFitnessFunction(Dataset dataset, int classAttributeIndex) {
+  public WinnerTakesAllClassification(Dataset dataset, int classAttributeIndex) {
     this.classAttributeIndex = classAttributeIndex;
     this.dataset = dataset;
-    this.inputs = new double[dataset.getSchema().getAttributeCount() - 1];
   }
 
   @Override
   public Fitness evaluate(ProgramRunner programRunner, Individual individual) {
     double classError = 0;
+    double[] inputs = new double[dataset.getSchema().getAttributeCount() - 1];
     for (Instance instance : dataset.getInstances()) {
       double[] values = instance.getValues();
       int c = 0;
@@ -34,7 +32,17 @@ public class ClassificationErrorFitnessFunction implements FitnessFunction {
       }
       double[] result = programRunner.run(inputs);
       double expected = values[classAttributeIndex];
-      if (!(Math.abs(result[0] - expected) < 0.5)) {
+      
+      
+      double max = result[0];
+      int maxIndex = 0;
+      for (int i = 1; i < result.length; i++) {
+        if(result[i] > max) {
+          maxIndex = i;
+          max = result[i];
+        }
+      }
+      if (expected != maxIndex) {
         classError++;
       }
     }
